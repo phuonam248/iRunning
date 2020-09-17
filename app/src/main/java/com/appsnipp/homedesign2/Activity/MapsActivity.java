@@ -8,8 +8,15 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Chronometer;
 
 import com.appsnipp.homedesign2.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -36,6 +43,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean locationPermissionGranted = false;
     private LatLng defaultLocation = new LatLng(10.762622, 106.660172);
     private Polyline curPolyline = null;
+    private LatLng mCurLocation = null;
+    private Chronometer chronometer;
+    private boolean isResume = false;
+    private boolean isStarting = false;
+    long tMilisec, tStart, tBuff, tUpdate = 0L;
+    int sec, min, milisec;
+    Handler handler;
+    Button startBtn, pauseBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +64,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-
+        chronometer = findViewById(R.id.stopwatch);
+        startBtn = findViewById(R.id.startBtn);
+        pauseBtn = findViewById(R.id.pauseBtn);
+        handler = new Handler();
     }
+
+    public Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            tMilisec = SystemClock.uptimeMillis() - tStart;
+            tUpdate = tBuff + tMilisec;
+            sec = (int) (tUpdate/1000);
+            min = sec/60;
+            sec = sec%60;
+            milisec = (int) (tUpdate%100);
+            String newTime = String.format("%02d", min) + ":"
+                    + String.format("%02d", sec) + ":"
+                    + String.format("%02d", milisec) + ":";
+            chronometer.setText(newTime);
+            handler.postDelayed(this, 60);
+        }
+    };
 
     /**
      * Manipulates the map once available.
@@ -64,8 +99,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
         getLocationPermission();
     }
 
@@ -84,7 +117,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     1); // 1 = PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
-            getDeviceLocation();
         }
     }
 
@@ -108,23 +140,41 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
          * cases when a location is not available.
          */
         try {
+
+            LocationManager locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
+                @Override
+                public void onLocationChanged(@NonNull Location location) {
+                    System.out.println("I'M WALKINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+                    if (mCurLocation != null) {
+                        LatLng newLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        Polyline polyline = mMap.addPolyline(new PolylineOptions().add(
+                                mCurLocation,
+                                newLocation
+                        ));
+                        mCurLocation = newLocation;
+                    }
+                }
+            });
+
             final Task<Location>[] locationResult = new Task[]{mFusedLocationProviderClient.getLastLocation()};
             locationResult[0].addOnCompleteListener(this, new OnCompleteListener<Location>() {
                 @Override
                 public void onComplete(@NonNull Task<Location> task) {
                     if (task.isSuccessful()) {
+                        mMap.getUiSettings().setMyLocationButtonEnabled(true);
                         // Set the map's camera position to the current location of the device.
                         //LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
                         //Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                         Location lastKnownLocation = task.getResult();
                         if (lastKnownLocation != null) {
                             mMap.setMyLocationEnabled(true);
-                            LatLng curLocation = new LatLng(lastKnownLocation.getLatitude(),
+                            mCurLocation = new LatLng(lastKnownLocation.getLatitude(),
                                     lastKnownLocation.getLongitude());
                             System.out.println("lastKnownLocation != null");
-                            mMap.addMarker(new MarkerOptions().position(curLocation).title("You are here"));
+                            mMap.addMarker(new MarkerOptions().position(mCurLocation).title("You are here"));
                             CameraPosition newCameraPosition = new CameraPosition.Builder()
-                                    .target(curLocation) // Sets the center of the map to Mountain View
+                                    .target(mCurLocation) // Sets the center of the map to Mountain View
                                     .zoom(15)                      // Sets the zoom
                                     .bearing(90)                   // Sets the orientation of the camera to east
                                     .tilt(30)                      // Sets the tilt of the camera to 30 degrees
@@ -154,4 +204,49 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        new FetchURL(this).execute(requestDirectionUrl, routeMode);
     }
 
+    public void start_onClick(View view) {
+        if (!isStarting) {
+            tStart = SystemClock.uptimeMillis();
+            handler.postDelayed(runnable, 0);
+            chronometer.start();
+            isStarting = true;
+            isResume = true;
+            startBtn.setText("STOP");
+        }
+        else {
+                handler.removeCallbacks(runnable);
+                chronometer.stop();
+                tMilisec = 0L;
+                tStart = 0L;
+                tUpdate = 0L;
+                tBuff = 0L;
+                sec = 0;
+                min = 0;
+                milisec = 0;
+                chronometer.setText("00:00:00");
+                isStarting = false;
+                isResume = false;
+                startBtn.setText("START");
+                pauseBtn.setText("PAUSE");
+        }
+    }
+
+    public void pause_onClick(View view) {
+        if (isStarting) {
+            if (!isResume) {
+                tStart = SystemClock.uptimeMillis();
+                handler.postDelayed(runnable, 0);
+                chronometer.start();
+                isResume = true;
+                pauseBtn.setText("PAUSE");
+            }
+            else {
+                tBuff += tMilisec;
+                handler.removeCallbacks(runnable);
+                chronometer.stop();
+                isResume = false;
+                pauseBtn.setText("RESUME");
+            }
+        }
+    }
 }

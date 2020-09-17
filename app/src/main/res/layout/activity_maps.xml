@@ -18,101 +18,158 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="4"
         android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"
+            android:layout_weight="2"
             android:orientation="horizontal">
-
             <LinearLayout
-                android:background="@drawable/map_element_border"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:orientation="vertical">
-
+                android:layout_weight="1" android:orientation="vertical">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:text="TOTAL CALORIES BURNED"/>
+                    android:text="DISTANCE"
+                    android:paddingLeft="25dp"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:text="1000 cal"
-                    android:textSize="20dp"/>
-
+                    android:gravity="center_vertical"
+                    android:paddingLeft="25dp"
+                    android:text="0 km"
+                    android:textColor="@color/black"
+                    android:textSize="25dp"
+                    android:textStyle="bold" />
             </LinearLayout>
-
             <LinearLayout
-                android:background="@drawable/map_element_border"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="5"
+                android:layout_weight="1"
                 android:orientation="vertical">
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:text="TOTAL DISTANCE"/>
-
-                <TextView
+                    android:text="DURATION"
+                    android:paddingLeft="25dp"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical"/>
+                <Chronometer
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:text="1000 km/h"
-                    android:textSize="20dp"/>
-
+                    android:format="00:00:00"
+                    android:gravity="center_vertical"
+                    android:textSize="25dp"
+                    android:paddingLeft="25dp"
+                    android:textStyle="bold"
+                    android:id="@+id/stopwatch"/>
             </LinearLayout>
-
         </LinearLayout>
-
         <LinearLayout
-            android:background="@drawable/map_element_border"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="TOTAL POINT"
-                android:textAlignment="center"
-                android:gravity="center"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:text="283"
-                android:textSize="25dp"
-                android:textAlignment="center"
-                android:gravity="center"/>
-
+            android:layout_weight="2">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="SCORE"
+                    android:paddingLeft="25dp"
+                    android:gravity="center_vertical"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
+                    android:text="0"
+                    android:textSize="25dp"
+                    android:gravity="center_vertical"
+                    android:textStyle="bold"
+                    android:paddingLeft="25dp"
+                    android:textColor="@color/black"/>/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="BURNED CALORIES"
+                    android:paddingLeft="25dp"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
+                    android:text="0 kcal"
+                    android:textSize="25dp"
+                    android:gravity="center_vertical"
+                    android:textStyle="bold"
+                    android:paddingLeft="25dp"
+                    android:textColor="@color/black"/>/>
+            </LinearLayout>
         </LinearLayout>
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:orientation="horizontal"
+            android:paddingTop="10dp">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <Button
+                    android:layout_width="180dp"
+                    android:layout_gravity="center"
+                    android:layout_height="50dp"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:text="PAUSE"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:background="@drawable/btn_round_corner"
+                    android:id="@+id/pauseBtn"
+                    android:onClick="pause_onClick"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <Button
+                    android:layout_width="180dp"
+                    android:layout_gravity="center"
+                    android:layout_height="50dp"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:text="START"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:background="@drawable/btn_round_corner"
+                    android:id="@+id/startBtn"
+                    android:onClick="start_onClick"/>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="START"/>
 </LinearLayout>
 
