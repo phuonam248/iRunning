@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp">
+
+    <FrameLayout
+        android:layout_width="54dp"
+        android:layout_height="54dp">
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="@dimen/thumbnail_height"
+            android:layout_height="@dimen/thumbnail_width"
+            android:background="@color/colorWhite"
+            android:elevation="3dp"
+            app:cardCornerRadius="10dp">
+            <ImageView
+                android:id="@+id/imgVPickerItem"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_launcher_foreground" />
+            <ImageView
+                android:id="@+id/imgViewTickPoint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_tick" />
+        </androidx.cardview.widget.CardView>
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:id="@+id/txtVPickerName"
+        android:gravity="center"
+        android:text="Name"
+        android:textColor="@color/colorBurntOrange"/>
+
+</LinearLayout>

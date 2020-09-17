@@ -1,0 +1,85 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!--styles for education app-->
+    <style name="viewParent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="parent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="parent.contentLayout">
+        <item name="android:background">@color/contentBodyColor</item>
+        <item name="android:padding">@dimen/normalPadding</item>
+    </style>
+
+    <style name="viewParent.headerText">
+        <item name="android:textColor">@color/contentTextColor</item>
+        <item name="android:textSize">@dimen/headerTextSize</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="My.Widget.ProgressBar" parent="Widget.AppCompat.ProgressBar"/>
+    <style name="My.Widget.Checkbox" parent="Widget.AppCompat.CompoundButton.CheckBox"/>
+
+    <style name="SwitchTheme" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:theme">@style/Theme.AppCompat.Light</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:colorControlActivated">#148E13</item>
+    </style>
+    <style name="CardView.Border20" parent="CardView">
+        <item name="cardCornerRadius">20dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="cardElevation">4dp</item>
+        <item name="contentPadding">10dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginBottom">3dp</item>
+        <item name="android:layout_marginTop">3dp</item>
+    </style>
+    <style name="Widget.AppCompat.TextView.MyStyle" parent="Widget.AppCompat.TextView.SpinnerItem">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">17dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+    <style name="Widget.AppCompat.SeekBar.MySeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_marginLeft">150dp</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    </style>
+    <style name="Widget.AppCompat.Button.MyButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="fontFamily">sans-serif</item>
+        <item name="android:textSize">17dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+</resources>

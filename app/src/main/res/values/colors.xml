@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FCFCFC</color>
+    <color name="colorPrimaryDark">#2A2E43</color>
+    <color name="colorAccent">#13D3B4</color>
+    <color name="bottomNavigationTextColor">#B2B2B2</color>
+    <color name="bottomNavigationTintColor">#B2B2B2</color>
+    <color name="bottomNavigationSelectedColor">#13D3B4</color>
+    <color name="statusBarColor">#000</color>
+    <color name="whiteBodyColor">#FCFCFC</color>
+    <color name="darkTextColor">#020000</color>
+    <color name="primaryTextColor">#1343D3</color>
+    <color name="whiteTextColor">#fff</color>
+    <color name="frutorial_title">#4c4c4c</color>
+    <color name="black">#000000</color>
+
+    <!--    home designs main color-->
+    <!--    will use the same color for all card and vectors, if you want to change this color, search the color code in vector files-->
+    <color name="designMainColor">#13D3B4</color>
+    <color name="imageBorderColor">#13D3B4</color>
+    <color name="contentStatusBar">#fff</color>
+
+    <!--colors for light mode-->
+    <color name="contentBodyColor">#FCFCFC</color>
+    <color name="contentTextColor">#020000</color>
+    <color name="bottomNavigationBackground">#F7F7F7</color>
+    <color name="miniTitle">#0F0101</color>
+    <color name="miniDescription">#707070</color>
+
+    <color name="start_map_btn_color">#F1D722</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBurntOrange">#954000</color>
+    <color name="colorOrangeCarrot">#E65C00</color>
+    <color name="colorOrange">#F76400</color>
+    <color name="colorOrangeLight1">#FF6700</color>
+    <color name="colorOrangeLight2">#F67C01</color>
+    <color name="colorOrangeLight3">#FF9248</color>
+    <color name="colorOrangeLight4">#FFB38A</color>
+    <color name="colorOrangeLight5">#FFD7B5</color>
+    <color name="colorGreenLight1">#0DFF84</color>
+    <color name="colorSky">#00F1FF</color>
+    <color name="transparent">#FF000000</color>
+
+</resources>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.NewsActivity"
+    android:orientation="vertical"
+    android:onClick="startingNews_onClick">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:orientation="vertical"
+        android:paddingTop="40dp"
+        android:id="@+id/selectedNewsWrapper"
+        android:background="@drawable/background_1">
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/selectedNewsDate"
+            android:layout_marginLeft="50dp"
+            android:text="28 Feb 2019, 9:00 AM"
+            android:textSize="10dp"
+            android:textColor="@color/colorWhite"/>
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="68dp"
+            android:id="@+id/selectedNewsTitle"
+            android:text="This is a news This is a news "
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="10dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorWhite"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="50dp"
+            android:layout_marginTop="20dp">
+            <ImageView
+                android:layout_width="55dp"
+                android:layout_height="@android:dimen/app_icon_size"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:id="@+id/selectedNewsAuthorImage" />
+            <LinearLayout
+                android:layout_width="240dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="#80000000">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Author's name"
+                    android:paddingLeft="20dp"
+                    android:textSize="12dp"
+                    android:textStyle="bold"
+                    android:id="@+id/selectedNewsAuthorName"
+                    android:textColor="@color/colorWhite"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Author"
+                    android:paddingLeft="20dp"
+                    android:textSize="10dp"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/colorWhite" />
+            </LinearLayout>
+        </LinearLayout>
+        <TextView
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="10dp"
+            android:textSize="10dp"
+            android:id="@+id/selectedNewsShortDes"
+            android:textColor="@color/colorWhite"
+            android:lineSpacingExtra="8dp"
+            android:background="#80000000"
+            android:text="Object-oriented programming is the most dramatic innovation in software development based on the concept of objects, etc"/>
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        android:id="@+id/newsListView"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <include
+            layout="@layout/bottom_navigation_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"/>
+    </LinearLayout>
+
+</LinearLayout>

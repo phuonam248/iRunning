@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/parent.contentLayout"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.appsnipp.homedesign2.Activity.MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textViewUser"
+                    style="@style/viewParent.headerText"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerVertical="true"
+                    android:maxLines="2"
+                    android:text="Anhbren"
+                    android:textColor="#2B49EF" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profileCircleImageView"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/goku_icon"
+                    app:civ_border_color="@color/imageBorderColor"
+                    app:civ_border_width="2dp" />
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@id/profileCircleImageView"
+                    android:src="@drawable/ic_search" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginBottom="20dp"
+                    android:minHeight="200dp"
+                    app:cardBackgroundColor="#13FAC4"
+                    app:cardCornerRadius="16dp"
+                    app:cardPreventCornerOverlap="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Continue to \nrun the Race"
+                                android:textColor="#A707EC"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="15dp"
+                                android:text="10% Complete"
+                                android:textColor="@color/primaryTextColor"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_height="151dp"
+                            android:layout_marginRight="12dp"
+                            android:layout_weight="1"
+                            android:adjustViewBounds="true"
+                            android:cropToPadding="true"
+                            android:elevation="44dp"
+                            android:src="@drawable/running_race" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+
+                    android:layout_margin="10dp"
+                    android:id="@+id/start_button"
+                    android:onClick="onClick_startMap"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_gravity="center"
+                    android:layout_centerInParent="true"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/start_button"
+                    android:focusable="true"
+                    android:scaleType="fitCenter"
+                    android:text="START"
+                    android:textColor="#00FFB7"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+                <TextView
+                    style="@style/viewParent.headerText"
+                    android:layout_width="222dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="0dp"
+                    android:text="Training Mode"
+                    android:textColor="#2B49EF" />
+
+                <TextView
+                    style="@style/viewParent"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="See All"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="@dimen/headerMoreTextSize"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <!--remove the below layout with recycler view, use card poplar courses as model for design-->
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/card_popular_courses" />
+
+                <include layout="@layout/card_popular_courses" />
+
+                <include layout="@layout/card_popular_courses" />
+
+
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+                <TextView
+                    style="@style/viewParent.headerText"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:text="Features"
+                    android:textColor="#2B49EF" />
+
+                <TextView
+                    style="@style/viewParent"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="See All"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="@dimen/headerMoreTextSize"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <!--remove the below layout with recycler view, use card poplar courses as model for design-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <include layout="@layout/card_frutorials" />
+
+                <include layout="@layout/card_frutorials" />
+
+                <include layout="@layout/card_frutorials" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

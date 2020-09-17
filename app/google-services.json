@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "288872117742",
+    "firebase_url": "https://irunningapp.firebaseio.com",
+    "project_id": "irunningapp",
+    "storage_bucket": "irunningapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:288872117742:android:b64c64584f08ebcb16caff",
+        "android_client_info": {
+          "package_name": "com.appsnipp.homedesign2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "288872117742-g58236r0optf2t4ppod0cauldm4oau30.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2Y8mLmkf6UMI9v7ivrOS1nH4g-BEaGws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "288872117742-g58236r0optf2t4ppod0cauldm4oau30.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

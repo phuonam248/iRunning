@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:layout_margin="5dp">
+    <androidx.cardview.widget.CardView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:cardCornerRadius="35dp"
+        android:elevation="10dp">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imgViewIngredientOfMeal"/>
+    </androidx.cardview.widget.CardView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/txtViewNameIngredientOfMeal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:text="Inggredient's Name"
+            android:textColor="@color/colorBurntOrange"
+            android:gravity="center"
+            android:paddingVertical="10dp"
+            android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/txtViewContentIngredientOfMeal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingVertical="10dp"
+            android:textSize="15sp"
+            android:textColor="@color/colorBurntOrange"
+            android:text="Content of Ingredient"
+            android:gravity="center"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

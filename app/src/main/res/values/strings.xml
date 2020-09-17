@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Education</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    // Di
+    <string name="facebook_app_id">203570234371776</string>
+    <string name="fb_login_protocol_scheme">fb203570234371776</string>
+    <string name="title_activity_maps">Map</string>
+    <dimen name="button_day">48dp</dimen>
+    <dimen name="thumbnail_height">54dp</dimen>
+    <dimen name="thumbnail_width">54dp</dimen>
+</resources>
