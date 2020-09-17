@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.TextView;
 
 import com.appsnipp.homedesign2.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -33,6 +34,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.Scanner;
+
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -43,14 +46,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean locationPermissionGranted = false;
     private LatLng defaultLocation = new LatLng(10.762622, 106.660172);
     private Polyline curPolyline = null;
-    private LatLng mCurLocation = null;
+    private Location mLastKnownLocation = null;
     private Chronometer chronometer;
     private boolean isResume = false;
     private boolean isStarting = false;
-    long tMilisec, tStart, tBuff, tUpdate = 0L;
-    int sec, min, milisec;
-    Handler handler;
-    Button startBtn, pauseBtn;
+    private long tMilisec, tStart, tBuff, tUpdate = 0L;
+    private int sec, min, milisec;
+    private Handler handler;
+    private Button startBtn, pauseBtn;
+    private TextView scoreTextView;
+    private TextView caloriesTextView;
+    private TextView distanceTextView;
+    // MET value for running with average speed of human
+    private double MET = 9.8;
+    // Average speed of human
+    private double aveSpeed = 12.67;
 
 
     @Override
@@ -64,11 +74,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        initComponents();
+        handler = new Handler();
+    }
+
+    private void initComponents() {
         chronometer = findViewById(R.id.stopwatch);
         startBtn = findViewById(R.id.startBtn);
         pauseBtn = findViewById(R.id.pauseBtn);
-        handler = new Handler();
+        scoreTextView = findViewById(R.id.scoreTextView);
+        distanceTextView = findViewById(R.id.distanceTextView);
+        caloriesTextView = findViewById(R.id.caloriesTextView);
     }
+
 
     public Runnable runnable = new Runnable() {
         @Override
@@ -86,6 +104,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             handler.postDelayed(this, 60);
         }
     };
+
+    double totalCaloriesBurned(int min, double weigh) {
+        return (min*MET*3.5*weigh)/200;
+    }
+
+
 
     /**
      * Manipulates the map once available.
@@ -117,6 +141,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     1); // 1 = PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+            getDeviceLocation();
         }
     }
 
@@ -145,14 +170,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
                 @Override
                 public void onLocationChanged(@NonNull Location location) {
-                    System.out.println("I'M WALKINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
-                    if (mCurLocation != null) {
-                        LatLng newLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                        Polyline polyline = mMap.addPolyline(new PolylineOptions().add(
-                                mCurLocation,
-                                newLocation
-                        ));
-                        mCurLocation = newLocation;
+                    if (mLastKnownLocation != null) {
+                        double distance = mLastKnownLocation.distanceTo(location);
+                        String curDistanceString = (String) distanceTextView.getText();
+                        double curDistanceDouble = getDoubleFromString(curDistanceString);
+                        distance+=curDistanceDouble;
+                        double convertToKm = distance/1000;
+                        distanceTextView.setText(String.valueOf(convertToKm) + " km");
+
+                        String curCaloriesString = (String)caloriesTextView.getText();
+                        double curCaloriesDouble = getDoubleFromString(curCaloriesString);
+                        double newCalories = totalCaloriesBurned(min, 70);
+                        curCaloriesDouble+=newCalories;
+                        caloriesTextView.setText(String.valueOf(curCaloriesDouble) + " kcal");
                     }
                 }
             });
@@ -166,15 +196,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         // Set the map's camera position to the current location of the device.
                         //LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
                         //Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        Location lastKnownLocation = task.getResult();
-                        if (lastKnownLocation != null) {
+                        mLastKnownLocation = task.getResult();
+                        if (mLastKnownLocation != null) {
                             mMap.setMyLocationEnabled(true);
-                            mCurLocation = new LatLng(lastKnownLocation.getLatitude(),
-                                    lastKnownLocation.getLongitude());
+                            LatLng curLocation = new LatLng(mLastKnownLocation.getLatitude(),
+                                    mLastKnownLocation.getLongitude());
                             System.out.println("lastKnownLocation != null");
-                            mMap.addMarker(new MarkerOptions().position(mCurLocation).title("You are here"));
+                            mMap.addMarker(new MarkerOptions().position(curLocation).title("You are here"));
                             CameraPosition newCameraPosition = new CameraPosition.Builder()
-                                    .target(mCurLocation) // Sets the center of the map to Mountain View
+                                    .target(curLocation) // Sets the center of the map to Mountain View
                                     .zoom(15)                      // Sets the zoom
                                     .bearing(90)                   // Sets the orientation of the camera to east
                                     .tilt(30)                      // Sets the tilt of the camera to 30 degrees
@@ -194,6 +224,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage(), e);
         }
+    }
+
+    double getDoubleFromString(String string) {
+        Scanner st = new Scanner(string);
+        while (!st.hasNextDouble()) {
+            st.next();
+        }
+        return st.nextDouble();
     }
 
     private void drawRouteToChosenMap(LatLng curLocation) {

@@ -47,7 +47,8 @@
                     android:text="0 km"
                     android:textColor="@color/black"
                     android:textSize="25dp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:id="@+id/distanceTextView"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="0dp"
@@ -99,7 +100,8 @@
                     android:gravity="center_vertical"
                     android:textStyle="bold"
                     android:paddingLeft="25dp"
-                    android:textColor="@color/black"/>/>
+                    android:textColor="@color/black"
+                    android:id="@+id/scoreTextView"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="0dp"
@@ -122,7 +124,8 @@
                     android:gravity="center_vertical"
                     android:textStyle="bold"
                     android:paddingLeft="25dp"
-                    android:textColor="@color/black"/>/>
+                    android:textColor="@color/black"
+                    android:id="@+id/caloriesTextView"/>
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
