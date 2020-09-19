@@ -6,7 +6,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
+import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -34,10 +39,14 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private ArrayList<LatLng> runningRecord;
+    private Dialog dialog;
+    private int totalScore = 0;
     private GoogleMap mMap;
     FusedLocationProviderClient mFusedLocationProviderClient;
     private int DEFAULT_ZOOM = 15;
@@ -46,12 +55,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean locationPermissionGranted = false;
     private LatLng defaultLocation = new LatLng(10.762622, 106.660172);
     private Polyline curPolyline = null;
+    private Location mPreviousLocation = null;
     private Location mLastKnownLocation = null;
     private Chronometer chronometer;
     private boolean isResume = false;
     private boolean isStarting = false;
     private long tMilisec, tStart, tBuff, tUpdate = 0L;
     private int sec, min, milisec;
+    private double minDouble;
     private Handler handler;
     private Button startBtn, pauseBtn;
     private TextView scoreTextView;
@@ -85,30 +96,54 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         scoreTextView = findViewById(R.id.scoreTextView);
         distanceTextView = findViewById(R.id.distanceTextView);
         caloriesTextView = findViewById(R.id.caloriesTextView);
+        dialog = new Dialog(this);
+        runningRecord = new ArrayList<>();
     }
 
+    void showSummaryPopUp() {
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setContentView(R.layout.summary_pop_up);
+        Button restartBtn = dialog.findViewById(R.id.restartBtn);
+        restartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                Intent backToMain = new Intent(MapsActivity.this, MainActivity.class);
+                startActivity(backToMain);
+            }
+        });
+        TextView totalScoreTextView = dialog.findViewById(R.id.totalScoreTextView);
+        totalScoreTextView.setText(scoreTextView.getText());
+        TextView totalDisTextView = dialog.findViewById(R.id.totalDisTextView);
+        totalDisTextView.setText(distanceTextView.getText());
+        TextView totalDurationTextView = dialog.findViewById(R.id.durationTextView);
+        totalDurationTextView.setText(chronometer.getText());
+        TextView totalCaloriesTextView = dialog.findViewById(R.id.totalCaloriesTextView);
+        totalCaloriesTextView.setText(caloriesTextView.getText());
+        dialog.show();
+    }
 
     public Runnable runnable = new Runnable() {
         @Override
         public void run() {
             tMilisec = SystemClock.uptimeMillis() - tStart;
             tUpdate = tBuff + tMilisec;
-            sec = (int) (tUpdate/1000);
-            min = sec/60;
-            sec = sec%60;
-            milisec = (int) (tUpdate%100);
+            sec = (int) (tUpdate / 1000);
+            min = sec / 60;
+            minDouble = (double) sec / 60;
+            sec = sec % 60;
+            milisec = (int) (tUpdate % 100);
             String newTime = String.format("%02d", min) + ":"
                     + String.format("%02d", sec) + ":"
-                    + String.format("%02d", milisec) + ":";
+                    + String.format("%02d", milisec);
             chronometer.setText(newTime);
             handler.postDelayed(this, 60);
         }
     };
 
-    double totalCaloriesBurned(int min, double weigh) {
-        return (min*MET*3.5*weigh)/200;
+    double totalCaloriesBurned(double dis, double weigh) {
+        return (dis * MET * 3.5 * weigh) / 200;
     }
-
 
 
     /**
@@ -136,12 +171,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            getDeviceLocation();
+            getDeviceLocation(true);
+            UpdateLocationChange();
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     1); // 1 = PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
-            getDeviceLocation();
         }
     }
 
@@ -153,39 +188,67 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getDeviceLocation();
+                    getDeviceLocation(true);
+                    UpdateLocationChange();
                 }
             }
         }
     }
 
-    private void getDeviceLocation() {
+    private void UpdateLocationChange() {
+        LocationManager locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                getDeviceLocation(false);
+                if (mLastKnownLocation != null && mPreviousLocation != null  && isStarting && isResume) {
+                    double distance = mPreviousLocation.distanceTo(mLastKnownLocation);
+                    System.out.println(distance);
+                    String curDistanceString = (String) distanceTextView.getText();
+                    double curDistanceDouble = getDoubleFromString(curDistanceString);
+                    System.out.println(curDistanceDouble);
+                    distance/=1000;
+                    distance += curDistanceDouble;
+                    System.out.println(distance);
+                    distanceTextView.setText(String.valueOf(Math.round(distance * 100.0) / 100.0) + " km");
+
+                    String curCaloriesString = (String) caloriesTextView.getText();
+                    double curCaloriesDouble = getDoubleFromString(curCaloriesString);
+                    double newCalories = totalCaloriesBurned(curDistanceDouble, 70);
+                    curCaloriesDouble += newCalories;
+                    curCaloriesDouble = Math.round(curCaloriesDouble * 100.0) / 100.0;
+                    caloriesTextView.setText(String.valueOf(curCaloriesDouble) + " kcal");
+
+                    if (minDouble != 0) {
+                        int newScore = (int) ((distance*1000) / (minDouble * 100));
+                        int curScore = Integer.valueOf((String) scoreTextView.getText());
+                        newScore += curScore;
+                        scoreTextView.setText(String.valueOf(newScore));
+                    }
+                    if (mPreviousLocation != null) {
+                        LatLng src = new LatLng(mPreviousLocation.getLatitude(), mPreviousLocation.getLongitude());
+                        LatLng des = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                        runningRecord.add(src);
+                        Polyline polyline = mMap.addPolyline(new PolylineOptions().add(
+                                src, des
+                        ));
+                    }
+                    mPreviousLocation = mLastKnownLocation;
+                }
+                mPreviousLocation = mLastKnownLocation;
+            }
+        });
+    }
+
+    private void getDeviceLocation(final boolean isFirstTime) {
         /*
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
          */
         try {
-
-            LocationManager locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
-                @Override
-                public void onLocationChanged(@NonNull Location location) {
-                    if (mLastKnownLocation != null) {
-                        double distance = mLastKnownLocation.distanceTo(location);
-                        String curDistanceString = (String) distanceTextView.getText();
-                        double curDistanceDouble = getDoubleFromString(curDistanceString);
-                        distance+=curDistanceDouble;
-                        double convertToKm = distance/1000;
-                        distanceTextView.setText(String.valueOf(convertToKm) + " km");
-
-                        String curCaloriesString = (String)caloriesTextView.getText();
-                        double curCaloriesDouble = getDoubleFromString(curCaloriesString);
-                        double newCalories = totalCaloriesBurned(min, 70);
-                        curCaloriesDouble+=newCalories;
-                        caloriesTextView.setText(String.valueOf(curCaloriesDouble) + " kcal");
-                    }
-                }
-            });
 
             final Task<Location>[] locationResult = new Task[]{mFusedLocationProviderClient.getLastLocation()};
             locationResult[0].addOnCompleteListener(this, new OnCompleteListener<Location>() {
@@ -202,16 +265,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             LatLng curLocation = new LatLng(mLastKnownLocation.getLatitude(),
                                     mLastKnownLocation.getLongitude());
                             System.out.println("lastKnownLocation != null");
-                            mMap.addMarker(new MarkerOptions().position(curLocation).title("You are here"));
-                            CameraPosition newCameraPosition = new CameraPosition.Builder()
-                                    .target(curLocation) // Sets the center of the map to Mountain View
-                                    .zoom(15)                      // Sets the zoom
-                                    .bearing(90)                   // Sets the orientation of the camera to east
-                                    .tilt(30)                      // Sets the tilt of the camera to 30 degrees
-                                    .build();
-                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(newCameraPosition));
-                        }
-                        else {
+                            if (isFirstTime) {
+                                mMap.addMarker(new MarkerOptions().position(curLocation).title("You are here"));
+                                CameraPosition newCameraPosition = new CameraPosition.Builder()
+                                        .target(curLocation) // Sets the center of the map to Mountain View
+                                        .zoom(15)                      // Sets the zoom
+                                        .bearing(90)                   // Sets the orientation of the camera to east
+                                        .tilt(30)                      // Sets the tilt of the camera to 30 degrees
+                                        .build();
+                                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(newCameraPosition));
+                            }
+                        } else {
                             System.out.println("lastKnownLocation = null");
                         }
                     } else {
@@ -221,9 +285,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
             });
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage(), e);
         }
+
     }
 
     double getDoubleFromString(String string) {
@@ -254,18 +319,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         else {
                 handler.removeCallbacks(runnable);
                 chronometer.stop();
-                tMilisec = 0L;
-                tStart = 0L;
-                tUpdate = 0L;
-                tBuff = 0L;
-                sec = 0;
-                min = 0;
-                milisec = 0;
-                chronometer.setText("00:00:00");
                 isStarting = false;
                 isResume = false;
                 startBtn.setText("START");
                 pauseBtn.setText("PAUSE");
+                showSummaryPopUp();
         }
     }
 
