@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
+import com.appsnipp.homedesign2.Entity.History;
 import com.appsnipp.homedesign2.Others.BottomNavigationBehavior;
 import com.appsnipp.homedesign2.Others.DarkModePrefManager;
 import com.appsnipp.homedesign2.R;
@@ -23,6 +24,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.util.Scanner;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity
     private BottomNavigationView bottomNavigationView;
     private static final int MODE_DARK = 0;
     private static final int MODE_LIGHT = 1;
+    private History history;
+    private boolean check = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +53,11 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         bottomNavigationView = findViewById(R.id.navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        bottomNavigationView.setSelectedItemId(R.id.navigation3);
 
         //handling floating action menu
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomNavigationBehavior());
-
-        bottomNavigationView.setSelectedItemId(R.id.navigation3);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
