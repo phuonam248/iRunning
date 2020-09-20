@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity
         //handling floating action menu
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomNavigationBehavior());
+
+        getDataFromMap();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -158,6 +160,32 @@ public class MainActivity extends AppCompatActivity
     public void onClick_startMap(View view) {
         Intent navigateToStartMap = new Intent(this, MapsActivity.class);
         startActivity(navigateToStartMap);
+    }
+
+    public void getDataFromMap() {
+        Intent intent = new Intent();
+        check = intent.getBooleanExtra("check", false);
+        if (check) {
+            String distance = intent.getStringExtra("distance");
+            String duration = intent.getStringExtra("duration");
+            String date = intent.getStringExtra("date");
+            String calories = intent.getStringExtra("calories");
+            Long score = (long)intent.getIntExtra("score", 0);
+
+            history = new History(date,
+                    duration,
+                    distance,
+                    calories,
+                    score);
+        }
+    }
+
+    double getDoubleFromString(String string) {
+        Scanner st = new Scanner(string);
+        while (!st.hasNextDouble()) {
+            st.next();
+        }
+        return st.nextDouble();
     }
 
 }
