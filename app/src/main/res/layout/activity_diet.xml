@@ -7,96 +7,137 @@
     android:background="@android:color/white"
     android:orientation="vertical"
     tools:context=".Activity.DietActivity">
-    <GridLayout
-        android:layout_width="336dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="372dp"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:layout_gravity="center_horizontal"
-        android:paddingTop="40dp"
+        android:paddingTop="2dp"
         android:columnCount="6"
         android:rowCount="1"
-        android:orientation="horizontal">
-
-
-        <Button
-            android:id="@+id/buttonMonday"
-            android:layout_width="@dimen/button_day"
-            android:layout_height="@dimen/button_day"
-            android:backgroundTint="@color/colorOrange"
-            android:layout_margin="3dp"
-            android:background="@drawable/shape_button_circle"
-            android:text="MON"
-            android:onClick="btnDay_onClick"/>
-        <Button
-            android:id="@+id/buttonTuesday"
-            android:layout_width="@dimen/button_day"
-            android:layout_height="@dimen/button_day"
-            android:backgroundTint="@color/colorOrangeLight1"
-            android:layout_margin="3dp"
-            android:background="@drawable/shape_button_circle"
-            android:text="TUE"
-            android:onClick="btnDay_onClick"/>
-        <Button
-            android:id="@+id/buttonWednesday"
-            android:layout_width="@dimen/button_day"
-            android:layout_height="@dimen/button_day"
-            android:backgroundTint="@color/colorOrangeLight2"
-            android:layout_margin="3dp"
-            android:background="@drawable/shape_button_circle"
-            android:text="WED"
-            android:onClick="btnDay_onClick"/>
-        <Button
-            android:id="@+id/buttonThursday"
-            android:layout_width="@dimen/button_day"
-            android:layout_height="@dimen/button_day"
-            android:backgroundTint="@color/colorOrangeLight3"
-            android:layout_margin="3dp"
-            android:background="@drawable/shape_button_circle"
-            android:text="THU"
-            android:onClick="btnDay_onClick"/>
-        <Button
-            android:id="@+id/buttonFriday"
-            android:layout_width="@dimen/button_day"
-            android:layout_height="@dimen/button_day"
-            android:backgroundTint="@color/colorOrangeLight4"
-            android:layout_margin="3dp"
-            android:background="@drawable/shape_button_circle"
-            android:text="FRI"
-            android:onClick="btnDay_onClick"/>
-        <Button
-            android:id="@+id/buttonSaturday"
-            android:layout_width="@dimen/button_day"
-            android:layout_height="@dimen/button_day"
-            android:backgroundTint="@color/colorOrangeLight5"
-            android:layout_margin="3dp"
-            android:background="@drawable/shape_button_circle"
-            android:text="SAT"
-            android:onClick="btnDay_onClick"/>
-    </GridLayout>
+        android:orientation="horizontal"
+        android:id="@+id/rclVDayOfWeek"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/buttonFindFood"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="end"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/ic_baseline_add_circle_outline_24"
-            android:backgroundTint="@color/colorOrange"
-            android:onClick="btnFindFood_onClick"/>
-
-        <androidx.recyclerview.widget.RecyclerView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            android:id="@+id/recyclerViewMeal"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="40dp"
+                android:gravity="bottom"
+                android:text="Breakfast"
+                android:textSize="25sp" />
+            <Button
+                android:id="@+id/buttonFindFood0"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/ic_baseline_add_circle_outline_24"
+                android:backgroundTint="@color/colorOrange"
+                android:onClick="btnFindFood_onClick" />
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
             android:layout_marginVertical="10dp"
-            android:layout_marginHorizontal="20dp"/>
+            android:layout_marginHorizontal="20dp"
+            app:cardCornerRadius="20dp"
+            android:elevation="10dp">
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                android:id="@+id/rclVBreakfast"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"/>
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="40dp"
+                android:gravity="bottom"
+                android:text="Lunch"
+                android:textSize="25sp" />
+            <Button
+                android:id="@+id/buttonFindFood1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/ic_baseline_add_circle_outline_24"
+                android:backgroundTint="@color/colorOrange"
+                android:onClick="btnFindFood_onClick" />
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:layout_marginVertical="10dp"
+            android:layout_marginHorizontal="20dp"
+            app:cardCornerRadius="20dp"
+            android:elevation="20dp">
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                android:id="@+id/rclVLunch"
+                android:layout_marginVertical="10dp"
+                android:layout_marginHorizontal="20dp"/>
+        </androidx.cardview.widget.CardView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="40dp"
+                android:gravity="bottom"
+                android:text="Dinner"
+                android:textSize="25sp" />
+            <Button
+                android:id="@+id/buttonFindFood2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/ic_baseline_add_circle_outline_24"
+                android:backgroundTint="@color/colorOrange"
+                android:onClick="btnFindFood_onClick" />
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="10dp"
+            android:layout_weight="3"
+            android:elevation="20dp"
+            app:cardCornerRadius="20dp">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rclVDinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"/>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

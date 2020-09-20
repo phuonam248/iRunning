@@ -49,7 +49,7 @@ public class ListSongActivity extends AppCompatActivity {
     private void setUpBotNav() {
         bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        bottomNavigationView.setSelectedItemId(R.id.navigationMenu);
+        bottomNavigationView.setSelectedItemId(R.id.navigation4);
     }
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -57,23 +57,27 @@ public class ListSongActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment;
             switch (item.getItemId()) {
-                case R.id.navigationMyProfile:
-                    Intent setting = new Intent(ListSongActivity.this, SettingActivity.class);
-                    startActivity(setting);
-                    return true;
-                case R.id.navigationMyCourses:
+                case R.id.navigation1:
                     Intent news = new Intent(ListSongActivity.this, NewsActivity.class);
                     startActivity(news);
                     return true;
-                case R.id.navigationHome:
-                    Intent home = new Intent(ListSongActivity.this, MainActivity.class);
-                    startActivity(home);
-                    return true;
-                case  R.id.navigationSearch:
+
+                case  R.id.navigation2:
                     Intent diet = new Intent(ListSongActivity.this, DietActivity.class);
                     startActivity(diet);
                     return true;
-                case  R.id.navigationMenu:
+
+                case R.id.navigation3:
+                    Intent home = new Intent(ListSongActivity.this, MainActivity.class);
+                    startActivity(home);
+                    return true;
+
+                case  R.id.navigation4:
+                    return true;
+
+                case R.id.navigation5:
+                    Intent setting = new Intent(ListSongActivity.this, SettingActivity.class);
+                    startActivity(setting);
                     return true;
             }
             return false;

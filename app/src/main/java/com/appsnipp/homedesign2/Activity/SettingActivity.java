@@ -59,7 +59,7 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
         bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        bottomNavigationView.setSelectedItemId(R.id.navigationMyProfile);
+        bottomNavigationView.setSelectedItemId(R.id.navigation5);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         // setContentView(R.layout.activity_setting);
@@ -73,23 +73,27 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment;
             switch (item.getItemId()) {
-                case R.id.navigationMyProfile:
-                    return true;
-                case R.id.navigationMyCourses:
+                case R.id.navigation1:
                     Intent news = new Intent(SettingActivity.this, NewsActivity.class);
                     startActivity(news);
                     return true;
-                case R.id.navigationHome:
-                    Intent home = new Intent(SettingActivity.this, MainActivity.class);
+
+                case R.id.navigation2:
+                    Intent home = new Intent(SettingActivity.this, DietActivity.class);
                     startActivity(home);
                     return true;
-                case R.id.navigationSearch:
-                    Intent diet = new Intent(SettingActivity.this, DietActivity.class);
-                    startActivity(diet);
+
+                case  R.id.navigation3:
+                    Intent setting = new Intent(SettingActivity.this, MainActivity.class);
+                    startActivity(setting);
                     return true;
-                case R.id.navigationMenu:
-                    Intent songs = new Intent(SettingActivity.this, ListSongActivity.class);
-                    startActivity(songs);
+
+                case  R.id.navigation4:
+                    Intent music = new Intent(SettingActivity.this, ListSongActivity.class);
+                    startActivity(music);
+                    return true;
+
+                case R.id.navigation5:
                     return true;
             }
             return false;

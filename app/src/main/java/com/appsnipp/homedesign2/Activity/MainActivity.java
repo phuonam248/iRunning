@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setDarkMode(getWindow());
+        //setDarkMode(getWindow());
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -53,9 +53,8 @@ public class MainActivity extends AppCompatActivity
         //handling floating action menu
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomNavigationBehavior());
-        bottomNavigationView.setSelectedItemId(R.id.navigationHome);
 
-
+        bottomNavigationView.setSelectedItemId(R.id.navigation3);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -65,23 +64,27 @@ public class MainActivity extends AppCompatActivity
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment;
             switch (item.getItemId()) {
-                case R.id.navigationMyProfile:
-                    Intent setting = new Intent(MainActivity.this, SettingActivity.class);
-                    startActivity(setting);
-                    return true;
-                case R.id.navigationMyCourses:
+                case R.id.navigation1:
                     Intent news = new Intent(MainActivity.this, NewsActivity.class);
                     startActivity(news);
                     return true;
-                case R.id.navigationHome:
+
+                case R.id.navigation2:
+                    Intent home = new Intent(MainActivity.this, DietActivity.class);
+                    startActivity(home);
                     return true;
-                case  R.id.navigationSearch:
-                    Intent diet = new Intent(MainActivity.this, DietActivity.class);
-                    startActivity(diet);
+
+                case  R.id.navigation3:
                     return true;
-                case  R.id.navigationMenu:
-                    Intent songs = new Intent(MainActivity.this, ListSongActivity.class);
-                    startActivity(songs);
+
+                case  R.id.navigation4:
+                    Intent music = new Intent(MainActivity.this, ListSongActivity.class);
+                    startActivity(music);
+                    return true;
+
+                case R.id.navigation5:
+                    Intent setting = new Intent(MainActivity.this, SettingActivity.class);
+                    startActivity(setting);
                     return true;
             }
             return false;

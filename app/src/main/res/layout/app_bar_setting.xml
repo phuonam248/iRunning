@@ -5,114 +5,119 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <GridLayout
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:layout_margin="40dp"
-        android:layout_gravity="center">
-        <androidx.cardview.widget.CardView
-            android:layout_height="120dp"
-            android:layout_width="120dp"
-            app:cardCornerRadius="60dp"
-            android:layout_gravity="center">
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_user"/>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:background="@drawable/border_button"
-            android:text="Edit Profile"
-            android:textAllCaps="false"
-            android:layout_gravity="center"
-            android:layout_margin="20dp"
-            android:elevation="5dp"/>
-    </GridLayout>
-
-    <androidx.cardview.widget.CardView
-        style="@style/CardView.Border20"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <TextView
-            style="@style/Widget.AppCompat.TextView.MyStyle"
-            android:text="Light Theme"/>
-        <Switch
-            style="@style/SwitchTheme"
-            android:id="@+id/DarkThemeSwitch"/>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        style="@style/CardView.Border20"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        >
-        <TextView
-            style="@style/Widget.AppCompat.TextView.MyStyle"
-            android:text="Assistant"/>
-        <Switch
-            style="@style/SwitchTheme"
-            android:id="@+id/AssistantSwitch"/>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        style="@style/CardView.Border20"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <TextView
-            android:text="Assistant Volume"
-            style="@style/Widget.AppCompat.TextView.MyStyle"/>
-        <SeekBar
-            style="@style/Widget.AppCompat.SeekBar.MySeekBar"
-            android:id="@+id/VolSystemBar"/>
-    </androidx.cardview.widget.CardView>
-    <androidx.cardview.widget.CardView
-        style="@style/CardView.Border20"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <TextView
-            style="@style/Widget.AppCompat.TextView.MyStyle"
-            android:text="Music Volume"/>
-        <SeekBar
-            style="@style/Widget.AppCompat.SeekBar.MySeekBar"
-            android:id="@+id/VolMusicBar"
-            android:layout_weight="1"/>
-    </androidx.cardview.widget.CardView>
-    <androidx.cardview.widget.CardView
-        style="@style/CardView.Border20"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <TextView
-            style="@style/Widget.AppCompat.TextView.MyStyle"
-            android:text="Help and Support"/>
-    </androidx.cardview.widget.CardView>
-    <androidx.cardview.widget.CardView
-        style="@style/CardView.Border20"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <TextView
-            style="@style/Widget.AppCompat.TextView.MyStyle"
-            android:text="About"/>
-    </androidx.cardview.widget.CardView>
-    <Button
-        style="@style/Widget.AppCompat.Button.MyButton"
-        android:onClick="onClick_logoutBtn"
-        android:id="@+id/logoutBtn"
-        android:text="Log out" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2">
+        android:layout_weight="10"
+        android:orientation="vertical">
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:layout_margin="40dp"
+            android:layout_gravity="center">
+            <androidx.cardview.widget.CardView
+                android:layout_height="120dp"
+                android:layout_width="120dp"
+                app:cardCornerRadius="60dp"
+                android:layout_gravity="center">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_user"/>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:background="@drawable/border_button"
+                android:text="Edit Profile"
+                android:textAllCaps="false"
+                android:layout_gravity="center"
+                android:layout_margin="20dp"
+                android:elevation="5dp"/>
+        </GridLayout>
+
+        <androidx.cardview.widget.CardView
+            style="@style/CardView.Border20"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <TextView
+                style="@style/Widget.AppCompat.TextView.MyStyle"
+                android:text="Light Theme"/>
+            <Switch
+                style="@style/SwitchTheme"
+                android:id="@+id/DarkThemeSwitch"/>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            style="@style/CardView.Border20"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+            <TextView
+                style="@style/Widget.AppCompat.TextView.MyStyle"
+                android:text="Assistant"/>
+            <Switch
+                style="@style/SwitchTheme"
+                android:id="@+id/AssistantSwitch"/>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            style="@style/CardView.Border20"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <TextView
+                android:text="Assistant Volume"
+                style="@style/Widget.AppCompat.TextView.MyStyle"/>
+            <SeekBar
+                style="@style/Widget.AppCompat.SeekBar.MySeekBar"
+                android:id="@+id/VolSystemBar"/>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            style="@style/CardView.Border20"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <TextView
+                style="@style/Widget.AppCompat.TextView.MyStyle"
+                android:text="Music Volume"/>
+            <SeekBar
+                style="@style/Widget.AppCompat.SeekBar.MySeekBar"
+                android:id="@+id/VolMusicBar"
+                android:layout_weight="1"/>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            style="@style/CardView.Border20"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <TextView
+                style="@style/Widget.AppCompat.TextView.MyStyle"
+                android:text="Help and Support"/>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            style="@style/CardView.Border20"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <TextView
+                style="@style/Widget.AppCompat.TextView.MyStyle"
+                android:text="About"/>
+        </androidx.cardview.widget.CardView>
+        <Button
+            style="@style/Widget.AppCompat.Button.MyButton"
+            android:onClick="onClick_logoutBtn"
+            android:id="@+id/logoutBtn"
+            android:text="Log out" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
         <include
             layout="@layout/bottom_navigation_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"/>
     </LinearLayout>
-
 
 </LinearLayout>
