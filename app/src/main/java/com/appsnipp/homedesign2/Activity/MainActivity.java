@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
+import com.appsnipp.homedesign2.Entity.History;
 import com.appsnipp.homedesign2.Others.BottomNavigationBehavior;
 import com.appsnipp.homedesign2.Others.DarkModePrefManager;
 import com.appsnipp.homedesign2.R;
@@ -23,6 +24,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.util.Scanner;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity
     private BottomNavigationView bottomNavigationView;
     private static final int MODE_DARK = 0;
     private static final int MODE_LIGHT = 1;
+    private History history;
+    private boolean check = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +60,29 @@ public class MainActivity extends AppCompatActivity
         layoutParams.setBehavior(new BottomNavigationBehavior());
         bottomNavigationView.setSelectedItemId(R.id.navigationHome);
 
+        Intent intent = new Intent();
+        check = intent.getBooleanExtra("check", false);
+        if (check) {
+            String distance = intent.getStringExtra("distance");
+            String duration = intent.getStringExtra("duration");
+            String date = intent.getStringExtra("date");
+            String calories = intent.getStringExtra("calories");
+            Long score = (long)intent.getIntExtra("score", 0);
 
+            history = new History(date,
+                    duration,
+                    distance,
+                    calories,
+                    score);
+        }
+    }
+
+    double getDoubleFromString(String string) {
+        Scanner st = new Scanner(string);
+        while (!st.hasNextDouble()) {
+            st.next();
+        }
+        return st.nextDouble();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
