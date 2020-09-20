@@ -28,7 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class SettingActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final int MODE_DARK = 0;
+    private static final int MODE_DARK = 1;
     private static final int MODE_LIGHT = 1;
 
     BottomNavigationView bottomNavigationView;
@@ -55,7 +55,6 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
 //        getSupportActionBar().setDisplayShowHomeEnabled(true);
 //        getSupportActionBar().setTitle("MyTitle");
 
-        setDarkMode(getWindow());
         bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -162,16 +161,6 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public void setDarkMode(Window window) {
-        if (new DarkModePrefManager(this).isNightMode()) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            changeStatusBar(MODE_DARK, window);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            changeStatusBar(MODE_LIGHT, window);
-        }
     }
 
     public void changeStatusBar(int mode, Window window) {

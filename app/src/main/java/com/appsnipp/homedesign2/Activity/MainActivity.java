@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private BottomNavigationView bottomNavigationView;
-    private static final int MODE_DARK = 0;
+    private static final int MODE_DARK = 1;
     private static final int MODE_LIGHT = 1;
     private History history;
     private boolean check = false;
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         bottomNavigationView = findViewById(R.id.navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         bottomNavigationView.setSelectedItemId(R.id.navigation3);
 
         //handling floating action menu
@@ -76,15 +77,12 @@ public class MainActivity extends AppCompatActivity
                     Intent home = new Intent(MainActivity.this, DietActivity.class);
                     startActivity(home);
                     return true;
-
                 case  R.id.navigation3:
                     return true;
-
                 case  R.id.navigation4:
                     Intent music = new Intent(MainActivity.this, ListSongActivity.class);
                     startActivity(music);
                     return true;
-
                 case R.id.navigation5:
                     Intent setting = new Intent(MainActivity.this, SettingActivity.class);
                     startActivity(setting);

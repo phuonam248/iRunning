@@ -29,7 +29,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class ListSongActivity extends AppCompatActivity {
-    private static final int MODE_DARK = 0;
+    private static final int MODE_DARK = 1;
     private static final int MODE_LIGHT = 1;
 
     BottomNavigationView bottomNavigationView;
