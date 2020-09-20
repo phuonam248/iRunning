@@ -41,39 +41,34 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
         RecyclerDayAdapter.OnDayListener{
     BottomNavigationView bottomNavigationView;
     private static final String TAG = "DietActivity";
-    private LinearLayoutManager _linearLayoutManager;
 
     private static List<DietMeals> _dietMeals;
     private static List<Ingredient> _ingredientList;
 
-    private RecyclerMealAdapter _recyclerBreakfastAdapter;
-    private RecyclerMealAdapter _recyclerLunchAdapter;
-    private RecyclerMealAdapter _recyclerDinnerAdapter;
+    private static RecyclerMealAdapter _recyclerBreakfastAdapter;
+    private static RecyclerMealAdapter _recyclerLunchAdapter;
+    private static RecyclerMealAdapter _recyclerDinnerAdapter;
 
-    private RecyclerView _breakfastRecyclerView;
-    private RecyclerView _lunchRecyclerView;
-    private RecyclerView _dinnerRecyclerView;
+    private static RecyclerView _breakfastRecyclerView;
+    private static RecyclerView _lunchRecyclerView;
+    private static RecyclerView _dinnerRecyclerView;
 
-    private RecyclerView _rclViewPicker;
-    private RecyclerIngredientsAdapter _ingredientsAdapter;
-    private RecyclerView _dayRecyclerView;
+    private static RecyclerView _rclViewPicker;
+    private static RecyclerIngredientsAdapter _ingredientsAdapter;
+    private static RecyclerView _dayRecyclerView;
 
-    private List<List<DietMeals>> _dietBreakfastInWeek;
-    private List<List<DietMeals>> _dietLunchInWeek;
-    private List<List<DietMeals>> _dietDinnerInWeek;
+    private static List<List<DietMeals>> _dietBreakfastInWeek;
+    private static List<List<DietMeals>> _dietLunchInWeek;
+    private static List<List<DietMeals>> _dietDinnerInWeek;
 
-    private List<RecyclerMealAdapter> _breakfastInWeekAdapter;
-    private List<RecyclerMealAdapter> _lunchInWeekAdapter;
-    private List<RecyclerMealAdapter> _dinnerInWeekAdapter;
-
-    private static List<List<DietMeals>> _dietMealsWeek;
+    private static List<RecyclerMealAdapter> _breakfastInWeekAdapter;
+    private static List<RecyclerMealAdapter> _lunchInWeekAdapter;
+    private static List<RecyclerMealAdapter> _dinnerInWeekAdapter;
 
     private List<DayOfWeek> _dayOfWeeks;
     private static RecyclerDayAdapter _dayOfWeekAdapter;
 
     private static int _dayID;
-
-    private BottomNavigationView _bottomNavigationView;
 
     private AlertDialog dialog;
 
