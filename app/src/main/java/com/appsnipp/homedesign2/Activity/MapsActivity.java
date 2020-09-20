@@ -124,6 +124,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 dialog.dismiss();
                 Intent backToMain = new Intent(MapsActivity.this, MainActivity.class);
+                backToMain.putExtra("check", true);
+                backToMain.putExtra("distance", distanceTextView.getText());
+                backToMain.putExtra("duration", chronometer.getText());
+                backToMain.putExtra("calories", caloriesTextView.getText());
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                backToMain.putExtra("date", simpleDateFormat.format(calendar.getTime()));
+                backToMain.putExtra("score", Integer.valueOf((String)scoreTextView.getText()));
                 startActivity(backToMain);
             }
         });

@@ -5,16 +5,16 @@ import java.util.Date;
 public class History {
     String _date;
     String _duration;
-    int _score;
-    double _distance;
-    double _calories;
+    String _distance;
+    String _calories;
+    long _score;
 
-    public History(String date, String duration, int score, double distance, double calories) {
+    public History(String date, String duration, String distance, String calories, long score) {
         this._date = date;
         this._duration = duration;
-        this._score = score;
         this._distance = distance;
         this._calories = calories;
+        this._score = score;
     }
 
     public String getDate() {
@@ -25,15 +25,15 @@ public class History {
         return _duration;
     }
 
-    public int getScore() {
-        return _score;
-    }
-
-    public double getDistance() {
+    public String getDistance() {
         return _distance;
     }
 
-    public double getCalories() {
+    public String getCalories() {
         return _calories;
+    }
+
+    public long getSCore() {
+        return _score;
     }
 }

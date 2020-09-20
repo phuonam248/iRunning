@@ -10,10 +10,10 @@
         android:layout_height="60dp"
         android:gravity="center_vertical"
         android:text="Thu, 12/5/2020"
+        android:textColor="#FF6700"
         android:textStyle="bold"
         android:textSize="20dp"
         android:paddingLeft="30dp"
-        android:textColor="#FF6700"
         android:id="@+id/hisDateTextView"/>
     <LinearLayout
         android:layout_width="400dp"
@@ -30,7 +30,6 @@
                 android:layout_weight="1"
                 android:text="RUNNING"
                 android:paddingLeft="50dp"
-                android:paddingTop="6dp"
                 android:textSize="18dp"
                 android:textStyle="bold" />
             <TextView
@@ -53,11 +52,36 @@
                 android:paddingLeft="50dp"
                 android:id="@+id/hisDurationTextView"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="SCORE"
+                    android:paddingLeft="20dp"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.5"
+                    android:text="300"
+                    android:textSize="25dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:paddingLeft="20dp"
+                    android:id="@+id/hisScoreTextView"/>
+            </LinearLayout>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -70,27 +94,13 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2.5"
+                android:layout_weight="1"
                 android:text="10.08 KCAL"
                 android:textSize="25dp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:paddingLeft="20dp"
-                android:paddingTop="14dp"
                 android:id="@+id/hisCaloriesTextView"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1.5">
-                <Button
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="20dp"
-                    android:background="@drawable/btn_round_corner"
-                    android:textColor="@color/white"
-                    android:text="full route"
-                    android:id="@+id/fullRouteBtn"/>
-            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

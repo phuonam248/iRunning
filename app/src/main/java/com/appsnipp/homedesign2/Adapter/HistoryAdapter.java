@@ -45,18 +45,13 @@ public class HistoryAdapter extends ArrayAdapter<History> {
         TextView dateTextView = convertView.findViewById(R.id.hisDateTextView);
         dateTextView.setText(_historyList.get(position).getDate());
         TextView distanceTextView = convertView.findViewById(R.id.hisDistanceTextView);
-        distanceTextView.setText(String.valueOf(_historyList.get(position).getDistance()) + " km");
+        distanceTextView.setText(_historyList.get(position).getDistance());
         TextView durationTextView = convertView.findViewById(R.id.hisDurationTextView);
         durationTextView.setText(_historyList.get(position).getDration());
         TextView caloriesTextView = convertView.findViewById(R.id.hisCaloriesTextView);
-        caloriesTextView.setText(String.valueOf(_historyList.get(position).getCalories()) + " kcal");
-        Button fullRouteBtn = convertView.findViewById(R.id.fullRouteBtn);
-        fullRouteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                
-            }
-        });
+        caloriesTextView.setText(_historyList.get(position).getCalories());
+        TextView scoreTextView = convertView.findViewById(R.id.hisScoreTextView);
+        scoreTextView.setText(String.valueOf(_historyList.get(position).getSCore()));
         return convertView;
     }
 }
