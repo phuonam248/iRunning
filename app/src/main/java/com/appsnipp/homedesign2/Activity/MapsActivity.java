@@ -39,11 +39,15 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Scanner;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private String startTime;
+    private Calendar calendar;
     private ArrayList<LatLng> runningRecord;
     private Dialog dialog;
     private int totalScore = 0;
@@ -98,6 +102,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         caloriesTextView = findViewById(R.id.caloriesTextView);
         dialog = new Dialog(this);
         runningRecord = new ArrayList<>();
+        calendar = Calendar.getInstance();
+    }
+
+    String getCurrentDate() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        return simpleDateFormat.format(calendar.getTime());
+    }
+
+    String getCurrentTime() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm a");
+        return simpleDateFormat.format(calendar.getTime());
     }
 
     void showSummaryPopUp() {
@@ -120,6 +135,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         totalDurationTextView.setText(chronometer.getText());
         TextView totalCaloriesTextView = dialog.findViewById(R.id.totalCaloriesTextView);
         totalCaloriesTextView.setText(caloriesTextView.getText());
+        TextView startTimeTextView = dialog.findViewById(R.id.startTimeTextView);
+        startTimeTextView.setText(startTime);
+        TextView endTimeTextView = dialog.findViewById(R.id.endTimeTextView);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm a");
+        endTimeTextView.setText(simpleDateFormat.format(calendar.getTime()));
         dialog.show();
     }
 
@@ -315,6 +335,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             isStarting = true;
             isResume = true;
             startBtn.setText("STOP");
+            startTime = getCurrentTime();
         }
         else {
                 handler.removeCallbacks(runnable);
