@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,8 +22,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.appsnipp.homedesign2.Adapter.IngredientAdapter;
+import com.appsnipp.homedesign2.Adapter.RecyclerDayAdapter;
 import com.appsnipp.homedesign2.Adapter.RecyclerIngredientsAdapter;
 import com.appsnipp.homedesign2.Adapter.RecyclerMealAdapter;
+import com.appsnipp.homedesign2.Entity.DayOfWeek;
 import com.appsnipp.homedesign2.Entity.DietMeals;
 import com.appsnipp.homedesign2.Entity.Ingredient;
 import com.appsnipp.homedesign2.Others.Helper;
@@ -34,21 +37,38 @@ import java.util.List;
 
 
 public class DietActivity extends AppCompatActivity implements RecyclerMealAdapter.OnMealListener,
-        RecyclerIngredientsAdapter.OnIngredientListener {
+        RecyclerIngredientsAdapter.OnIngredientListener,
+        RecyclerDayAdapter.OnDayListener{
     BottomNavigationView bottomNavigationView;
-    private static final String TAG = "MainActivity";
-    private LinearLayoutManager _linearLayoutManager;
+    private static final String TAG = "DietActivity";
+
     private static List<DietMeals> _dietMeals;
     private static List<Ingredient> _ingredientList;
-    private RecyclerMealAdapter _recyclerMealAdapter;
-    private RecyclerView _mealRecyclerView;
-    private RecyclerView _rclViewPicker;
-    private RecyclerIngredientsAdapter _ingredientsAdapter;
 
-    private List<RecyclerMealAdapter> _mealWeekAdapters;
-    private static List<List<DietMeals>> _dietMealsWeek;
+    private static RecyclerMealAdapter _recyclerBreakfastAdapter;
+    private static RecyclerMealAdapter _recyclerLunchAdapter;
+    private static RecyclerMealAdapter _recyclerDinnerAdapter;
+
+    private static RecyclerView _breakfastRecyclerView;
+    private static RecyclerView _lunchRecyclerView;
+    private static RecyclerView _dinnerRecyclerView;
+
+    private static RecyclerView _rclViewPicker;
+    private static RecyclerIngredientsAdapter _ingredientsAdapter;
+    private static RecyclerView _dayRecyclerView;
+
+    private static List<List<DietMeals>> _dietBreakfastInWeek;
+    private static List<List<DietMeals>> _dietLunchInWeek;
+    private static List<List<DietMeals>> _dietDinnerInWeek;
+
+    private static List<RecyclerMealAdapter> _breakfastInWeekAdapter;
+    private static List<RecyclerMealAdapter> _lunchInWeekAdapter;
+    private static List<RecyclerMealAdapter> _dinnerInWeekAdapter;
+
+    private List<DayOfWeek> _dayOfWeeks;
+    private static RecyclerDayAdapter _dayOfWeekAdapter;
+
     private static int _dayID;
-    private BottomNavigationView _bottomNavigationView;
 
     private AlertDialog dialog;
 
@@ -65,7 +85,8 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
     private void setUpBotNav() {
         bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        bottomNavigationView.setSelectedItemId(R.id.navigationSearch);
+
+        bottomNavigationView.setSelectedItemId(R.id.navigation2);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -74,23 +95,23 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment;
             switch (item.getItemId()) {
-                case R.id.navigationMyProfile:
-                    Intent setting = new Intent(DietActivity.this, SettingActivity.class);
-                    startActivity(setting);
-                    return true;
-                case R.id.navigationMyCourses:
+                case R.id.navigation1:
                     Intent news = new Intent(DietActivity.this, NewsActivity.class);
                     startActivity(news);
                     return true;
-                case R.id.navigationHome:
+                case R.id.navigation2:
+                    return true;
+                case R.id.navigation3:
                     Intent home = new Intent(DietActivity.this, MainActivity.class);
                     startActivity(home);
                     return true;
-                case R.id.navigationSearch:
-                    return true;
-                case R.id.navigationMenu:
+                case R.id.navigation4:
                     Intent songs = new Intent(DietActivity.this, ListSongActivity.class);
                     startActivity(songs);
+                    return true;
+                case R.id.navigation5:
+                    Intent setting = new Intent(DietActivity.this, SettingActivity.class);
+                    startActivity(setting);
                     return true;
             }
             return false;
@@ -100,10 +121,33 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
     private void initComponents() {
         initListDietMeal();
         initWeekAdapter();
-        _linearLayoutManager =
-                new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        initDayOfWeek();
         setRecyclerView();
         initBottomNav();
+
+    }
+
+    private void initDayOfWeek() {
+        _dayOfWeeks=new ArrayList<>(6);
+
+        DayOfWeek _day=new DayOfWeek("MON");
+        _dayOfWeeks.add(_day);
+        _day=new DayOfWeek("TUE");
+        _dayOfWeeks.add(_day);
+        _day=new DayOfWeek("WED");
+        _dayOfWeeks.add(_day);
+        _day=new DayOfWeek("THU");
+        _dayOfWeeks.add(_day);
+        _day=new DayOfWeek("FRI");
+        _dayOfWeeks.add(_day);
+        _day=new DayOfWeek("SAT");
+        _dayOfWeeks.add(_day);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(this,
+                RecyclerView.HORIZONTAL,false);
+        _dayOfWeekAdapter = new RecyclerDayAdapter(_dayOfWeeks,this,this);
+        _dayRecyclerView = (RecyclerView)findViewById(R.id.rclVDayOfWeek);
+        _dayRecyclerView.setLayoutManager(layoutManager);
+        _dayRecyclerView.setAdapter(_dayOfWeekAdapter);
     }
 
     private void initBottomNav() {
@@ -111,24 +155,83 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
     }
 
     private void setRecyclerView() {
-        _recyclerMealAdapter = _mealWeekAdapters.get(_dayID);
-        _mealRecyclerView = (RecyclerView) findViewById(R.id.recyclerViewMeal);
-        _mealRecyclerView.setLayoutManager(_linearLayoutManager);
-        _mealRecyclerView.setAdapter(_recyclerMealAdapter);
+        _recyclerBreakfastAdapter = _breakfastInWeekAdapter.get(_dayID);
+        _breakfastRecyclerView = (RecyclerView) findViewById(R.id.rclVBreakfast);
+        _breakfastRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+        _breakfastRecyclerView.setAdapter(_recyclerBreakfastAdapter);
+        new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(_breakfastRecyclerView);
+
+        _recyclerLunchAdapter = _lunchInWeekAdapter.get(_dayID);
+        _lunchRecyclerView = (RecyclerView) findViewById(R.id.rclVLunch);
+        _lunchRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+        _lunchRecyclerView.setAdapter(_recyclerLunchAdapter);
+        new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(_lunchRecyclerView);
+
+        _recyclerDinnerAdapter = _dinnerInWeekAdapter.get(_dayID);
+        _dinnerRecyclerView = (RecyclerView) findViewById(R.id.rclVDinner);
+        _dinnerRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+        _dinnerRecyclerView.setAdapter(_recyclerDinnerAdapter);
+        new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(_dinnerRecyclerView);
     }
 
     private void initWeekAdapter() {
         _dayID = 0;
-        _mealWeekAdapters = new ArrayList<>(6);
-        _dietMealsWeek = new ArrayList<>(6);
+
+        initBreakfastInWeekAdapter();
+        initLunchInWeekAdapter();
+        initDinnerInWeekAdapter();
+
+    }
+
+    private void initBreakfastInWeekAdapter() {
+        _breakfastInWeekAdapter = new ArrayList<>(6);
+        _dietBreakfastInWeek = new ArrayList<>(6);
         for (int i = 0; i < 6; i++) {
             List<DietMeals> _dMeal = new ArrayList<>();
             RecyclerMealAdapter _rclMealAdapter = new RecyclerMealAdapter(_dMeal,
                     this, this);
-            _dietMealsWeek.add(_dMeal);
-            _mealWeekAdapters.add(_rclMealAdapter);
+            _dietBreakfastInWeek.add(_dMeal);
+            _breakfastInWeekAdapter.add(_rclMealAdapter);
         }
     }
+
+    private void initLunchInWeekAdapter() {
+        _lunchInWeekAdapter = new ArrayList<>(6);
+        _dietLunchInWeek = new ArrayList<>(6);
+        for (int i = 0; i < 6; i++) {
+            List<DietMeals> _dMeal = new ArrayList<>();
+            RecyclerMealAdapter _rclMealAdapter = new RecyclerMealAdapter(_dMeal,
+                    this, this);
+            _dietLunchInWeek.add(_dMeal);
+            _lunchInWeekAdapter.add(_rclMealAdapter);
+        }
+    }
+
+    private void initDinnerInWeekAdapter() {
+        _dinnerInWeekAdapter = new ArrayList<>(6);
+        _dietDinnerInWeek = new ArrayList<>(6);
+        for (int i = 0; i < 6; i++) {
+            List<DietMeals> _dMeal = new ArrayList<>();
+            RecyclerMealAdapter _rclMealAdapter = new RecyclerMealAdapter(_dMeal,
+                    this, this);
+            _dietDinnerInWeek.add(_dMeal);
+            _dinnerInWeekAdapter.add(_rclMealAdapter);
+        }
+    }
+
+    private void initMealInWeekAdapter(List<List<DietMeals>> mealLists,
+                                       List<RecyclerMealAdapter> mealAdapter) {
+        mealAdapter = new ArrayList<>(6);
+        mealLists = new ArrayList<>(6);
+        for (int i = 0; i < 6; i++) {
+            List<DietMeals> _dMeal = new ArrayList<>();
+            RecyclerMealAdapter _rclMealAdapter = new RecyclerMealAdapter(_dMeal,
+                    this, this);
+            mealLists.add(_dMeal);
+            mealAdapter.add(_rclMealAdapter);
+        }
+    }
+
 
     private void initListDietMeal() {
         _dietMeals = new ArrayList<>();
@@ -169,7 +272,7 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
 
     @Override
     public void onMealItemClick(int position) {
-        DietMeals _dMeal = _dietMealsWeek.get(_dayID).get(position);
+        DietMeals _dMeal = _dietBreakfastInWeek.get(_dayID).get(position);
         AlertDialog.Builder _builder = new AlertDialog.Builder(DietActivity.this);
         View _view = getLayoutInflater().inflate(R.layout.food_info_layout, null);
         _builder.setView(_view);
@@ -178,7 +281,6 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
         dialog.show();
         dialog.getWindow().setLayout(1000, 1700);
         initMealInfoLayout(_view, _dMeal);
-
     }
 
     private void initMealInfoLayout(View view, final DietMeals dMeal) {
@@ -210,7 +312,7 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
         dialog.getWindow().setLayout(900, 1000);
         /* DUNG MO NO RA LAM GI */
         initIngredientsList();
-        initRecyclerViewPicker(_view, dialog);
+        initRecyclerViewPicker(_view, dialog,view);
     }
 
     private void initIngredientsList() {
@@ -246,14 +348,13 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
                 "Yến mạch", "g", 2));
     }
 
-    private void initRecyclerViewPicker(View view, final AlertDialog dialog) {
-
+    private void initRecyclerViewPicker(View view, final AlertDialog dialog,View button) {
+        final int _buttonID=button.getId();
         _ingredientsAdapter = new RecyclerIngredientsAdapter(_ingredientList,
                 this, this);
         GridLayoutManager _gridLayoutManager = new GridLayoutManager(this, 5);
         _rclViewPicker = (RecyclerView) view.findViewById(R.id.recyclerViewPicker);
         _rclViewPicker.setLayoutManager(_gridLayoutManager);
-        //_rclViewPicker.addItemDecoration(new RecyclerPickerDecoration(10));
         _rclViewPicker.setAdapter(_ingredientsAdapter);
         Button _buttonOk = view.findViewById(R.id.buttonChoose);
         _buttonOk.setOnClickListener(new View.OnClickListener() {
@@ -263,16 +364,27 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
                 DietMeals _result = helper.findProperDietMeal(
                         (ArrayList<String>) _selectedIngredientName,
                         (ArrayList<DietMeals>) _dietMeals);
-                Log.d(TAG, "onClick: " + _result.getName());
-                setResult(_result);
+                setResult(_result,_buttonID);
                 dialog.cancel();
             }
         });
     }
 
-    private void setResult(DietMeals result) {
-        _dietMealsWeek.get(_dayID).add(result);
-        _mealRecyclerView.getAdapter().notifyItemInserted(_dietMealsWeek.get(_dayID).size());
+    private void setResult(DietMeals result,int buttonID) {
+        switch (buttonID){
+            case R.id.buttonFindFood0:
+                _dietBreakfastInWeek.get(_dayID).add(result);
+                _breakfastRecyclerView.getAdapter().notifyItemInserted(_dietBreakfastInWeek.get(_dayID).size());
+                break;
+            case R.id.buttonFindFood1:
+                _dietLunchInWeek.get(_dayID).add(result);
+                _lunchRecyclerView.getAdapter().notifyItemInserted(_dietLunchInWeek.get(_dayID).size());
+                break;
+            case R.id.buttonFindFood2:
+                _dietDinnerInWeek.get(_dayID).add(result);
+                _dinnerRecyclerView.getAdapter().notifyItemInserted(_dietDinnerInWeek.get(_dayID).size());
+                break;
+        }
     }
 
     @Override
@@ -282,33 +394,35 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
         imageView.setVisibility(_ingredient.isChecked() ? view.VISIBLE : view.GONE);
     }
 
-    public void btnDay_onClick(View view) {
-        int _btnId = view.getId();
-        switch (_btnId) {
-            case R.id.buttonMonday:
-                _dayID = 0;
-                break;
-            case R.id.buttonTuesday:
-                _dayID = 1;
-                break;
-            case R.id.buttonWednesday:
-                _dayID = 2;
-                break;
-            case R.id.buttonThursday:
-                _dayID = 3;
-                break;
-            case R.id.buttonFriday:
-                _dayID = 4;
-                break;
-            case R.id.buttonSaturday:
-                _dayID = 5;
-                break;
-        }
-        _mealRecyclerView.setAdapter(_mealWeekAdapters.get(_dayID));
-        Log.d(TAG, "btnDay_onClick: " + _dayID);
-    }
-
     public void cancel_onCLick(View view) {
         dialog.cancel();
     }
+
+    @Override
+    public void onDayItemListener(View view, int position) {
+        _dayOfWeekAdapter.resetSelected();
+        _dayOfWeekAdapter.setSelectedPosition(view, position);
+        _dayID=position;
+        _breakfastRecyclerView.setAdapter(_breakfastInWeekAdapter.get(_dayID));
+        _lunchRecyclerView.setAdapter(_lunchInWeekAdapter.get(_dayID));
+        _dinnerRecyclerView.setAdapter(_dinnerInWeekAdapter.get(_dayID));
+    }
+
+    ItemTouchHelper.SimpleCallback itemTouchHelper = new ItemTouchHelper.
+            SimpleCallback(0,ItemTouchHelper.RIGHT| ItemTouchHelper.LEFT) {
+
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            _dietBreakfastInWeek.get(_dayID).remove(viewHolder.getAdapterPosition());
+            _recyclerBreakfastAdapter.notifyDataSetChanged();
+
+        }
+
+    };
+
 }

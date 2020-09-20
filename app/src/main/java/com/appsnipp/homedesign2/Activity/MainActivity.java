@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setDarkMode(getWindow());
+        //setDarkMode(getWindow());
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -53,36 +53,11 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         bottomNavigationView = findViewById(R.id.navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        bottomNavigationView.setSelectedItemId(R.id.navigation3);
 
         //handling floating action menu
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomNavigationBehavior());
-        bottomNavigationView.setSelectedItemId(R.id.navigationHome);
-
-        Intent intent = new Intent();
-        check = intent.getBooleanExtra("check", false);
-        if (check) {
-            String distance = intent.getStringExtra("distance");
-            String duration = intent.getStringExtra("duration");
-            String date = intent.getStringExtra("date");
-            String calories = intent.getStringExtra("calories");
-            Long score = (long)intent.getIntExtra("score", 0);
-
-            history = new History(date,
-                    duration,
-                    distance,
-                    calories,
-                    score);
-        }
-    }
-
-    double getDoubleFromString(String string) {
-        Scanner st = new Scanner(string);
-        while (!st.hasNextDouble()) {
-            st.next();
-        }
-        return st.nextDouble();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -92,23 +67,27 @@ public class MainActivity extends AppCompatActivity
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment;
             switch (item.getItemId()) {
-                case R.id.navigationMyProfile:
-                    Intent setting = new Intent(MainActivity.this, SettingActivity.class);
-                    startActivity(setting);
-                    return true;
-                case R.id.navigationMyCourses:
+                case R.id.navigation1:
                     Intent news = new Intent(MainActivity.this, NewsActivity.class);
                     startActivity(news);
                     return true;
-                case R.id.navigationHome:
+
+                case R.id.navigation2:
+                    Intent home = new Intent(MainActivity.this, DietActivity.class);
+                    startActivity(home);
                     return true;
-                case  R.id.navigationSearch:
-                    Intent diet = new Intent(MainActivity.this, DietActivity.class);
-                    startActivity(diet);
+
+                case  R.id.navigation3:
                     return true;
-                case  R.id.navigationMenu:
-                    Intent songs = new Intent(MainActivity.this, ListSongActivity.class);
-                    startActivity(songs);
+
+                case  R.id.navigation4:
+                    Intent music = new Intent(MainActivity.this, ListSongActivity.class);
+                    startActivity(music);
+                    return true;
+
+                case R.id.navigation5:
+                    Intent setting = new Intent(MainActivity.this, SettingActivity.class);
+                    startActivity(setting);
                     return true;
             }
             return false;

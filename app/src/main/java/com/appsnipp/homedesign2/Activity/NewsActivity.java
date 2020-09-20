@@ -54,7 +54,7 @@ public class NewsActivity extends AppCompatActivity {
     private void setUpBottomNav() {
         bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        bottomNavigationView.setSelectedItemId(R.id.navigationMyCourses);
+        bottomNavigationView.setSelectedItemId(R.id.navigation1);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -63,23 +63,27 @@ public class NewsActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment;
             switch (item.getItemId()) {
-                case R.id.navigationMyProfile:
-                    Intent setting = new Intent(NewsActivity.this, SettingActivity.class);
-                    startActivity(setting);
+                case R.id.navigation1:
                     return true;
-                case R.id.navigationMyCourses:
+
+                case R.id.navigation2:
+                    Intent news = new Intent(NewsActivity.this, DietActivity.class);
+                    startActivity(news);
                     return true;
-                case R.id.navigationHome:
+
+                case R.id.navigation3:
                     Intent home = new Intent(NewsActivity.this, MainActivity.class);
                     startActivity(home);
                     return true;
-                case  R.id.navigationSearch:
-                    Intent diet = new Intent(NewsActivity.this, DietActivity.class);
-                    startActivity(diet);
-                    return true;
-                case  R.id.navigationMenu:
+
+                case R.id.navigation4:
                     Intent songs = new Intent(NewsActivity.this, ListSongActivity.class);
                     startActivity(songs);
+                    return true;
+
+                case R.id.navigation5:
+                    Intent setting = new Intent(NewsActivity.this, SettingActivity.class);
+                    startActivity(setting);
                     return true;
             }
             return false;
