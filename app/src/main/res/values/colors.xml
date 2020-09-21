@@ -5,7 +5,7 @@
     <color name="colorAccent">#13D3B4</color>
     <color name="bottomNavigationTextColor">#B2B2B2</color>
     <color name="bottomNavigationTintColor">#B2B2B2</color>
-    <color name="bottomNavigationSelectedColor">#13D3B4</color>
+    <color name="bottomNavigationSelectedColor">#FF6700</color>
     <color name="statusBarColor">#000</color>
     <color name="whiteBodyColor">#FCFCFC</color>
     <color name="darkTextColor">#020000</color>

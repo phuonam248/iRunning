@@ -15,6 +15,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -22,9 +23,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.appsnipp.homedesign2.Entity.User;
 import com.appsnipp.homedesign2.R;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,7 +42,18 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,6 +62,9 @@ import java.util.Scanner;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private String TAG = "MapsActivity";
+    private StorageReference storageReference;
+    private FirebaseStorage storage;
     private String startTime;
     private Calendar calendar;
     private ArrayList<LatLng> runningRecord;
@@ -147,6 +166,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         TextView endTimeTextView = dialog.findViewById(R.id.endTimeTextView);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("h:mm a");
         endTimeTextView.setText(simpleDateFormat.format(calendar.getTime()));
+        loadCurrentUserAva();
         dialog.show();
     }
 
@@ -172,6 +192,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return (dis * MET * 3.5 * weigh) / 200;
     }
 
+    public void loadCurrentUserAva() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert currentUser != null;
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Users").child(currentUser.getUid());
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                storage = FirebaseStorage.getInstance();
+                storageReference = storage.getReference();
+                StorageReference profileRef = storageReference.child("images/" + user.getId().toString());
+                final ImageView imageView = dialog.findViewById(R.id.avaSummary);
+                profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(MapsActivity.this).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
+                                .into(imageView);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: "+ e.getMessage());
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MapsActivity.this, "" + databaseError.getCode(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     /**
      * Manipulates the map once available.

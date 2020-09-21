@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity
         profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Glide.with(getApplicationContext()).load(uri).error(R.mipmap.ic_lanch_default).circleCrop().thumbnail(0.1f)
+                Glide.with(getApplicationContext()).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
                         .into(avatarImage);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity
         profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Glide.with(getApplicationContext()).load(uri).error(R.mipmap.ic_lanch_default).circleCrop().thumbnail(0.1f)
+                Glide.with(getApplicationContext()).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
                         .into(avatarUpload);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -406,15 +406,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getDataFromMap() {
-        Intent intent = new Intent();
+        Intent intent = getIntent();
         check = intent.getBooleanExtra("check", false);
         if (check) {
             String distance = intent.getStringExtra("distance");
             String duration = intent.getStringExtra("duration");
             String date = intent.getStringExtra("date");
             String calories = intent.getStringExtra("calories");
-            Long score = (long)intent.getIntExtra("score", 0);
-
+            long score = (long)intent.getIntExtra("score", 0);
             history = new History(date,
                     duration,
                     distance,
@@ -431,4 +430,8 @@ public class MainActivity extends AppCompatActivity
         return st.nextDouble();
     }
 
+    public void fullList_onClick(View view) {
+        Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+        startActivity(intent);
+    }
 }
