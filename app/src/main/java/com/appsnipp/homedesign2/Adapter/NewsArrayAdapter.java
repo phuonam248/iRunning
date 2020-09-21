@@ -1,6 +1,9 @@
 package com.appsnipp.homedesign2.Adapter;
 
 import android.content.Context;
+
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,8 @@ import androidx.annotation.Nullable;
 
 import com.appsnipp.homedesign2.Entity.News;
 import com.appsnipp.homedesign2.R;
+import com.bumptech.glide.Glide;
+
 
 import java.util.ArrayList;
 
@@ -28,7 +33,8 @@ public class NewsArrayAdapter extends ArrayAdapter<News> {
         _newsRowLayoutId = resource;
         _newsList = objects;
     }
-    public interface OnNewsClickInterface{
+
+    public interface OnNewsClickInterface {
         void onNewsAdapterClick(News selectedNews);
     }
 
@@ -53,7 +59,14 @@ public class NewsArrayAdapter extends ArrayAdapter<News> {
         TextView newsTitle = convertView.findViewById(R.id.newsTitle);
         TextView newsDate = convertView.findViewById(R.id.newsDate);
 
-        newsImage.setImageResource(curNews.getBackgroundPhotoId());
+
+        Glide.with(_context)
+                .load(curNews.getBackgroundPhotoId())
+                .error(R.mipmap.ic_launcher_load)
+                .override(200, 200)
+                .centerCrop()
+                .into(newsImage);
+
         newsTitle.setText(curNews.getTitle());
         newsDate.setText(curNews.getDate());
         convertView.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +75,7 @@ public class NewsArrayAdapter extends ArrayAdapter<News> {
                 _myListener.onNewsAdapterClick(curNews);
             }
         });
+
 
         return convertView;
     }

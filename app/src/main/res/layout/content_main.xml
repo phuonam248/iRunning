@@ -13,7 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
 
@@ -28,83 +28,153 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerVertical="true"
                     android:maxLines="2"
-                    android:text="Anhbren"
-                    android:textColor="#2B49EF" />
+                    android:text="@string/lastest_ranking"
+                    android:padding="5dp"
+                    android:fadingEdge="vertical"
+                    android:scrollbarThumbHorizontal="@color/colorAccent"
+                    android:textColor="#630004"
+                    android:background="#E8FF14"
+                    />
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profileCircleImageView"
+                    android:id="@+id/avatarUpload"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_alignParentRight="true"
-                    android:src="@drawable/goku_icon"
+                    android:src="@drawable/hero"
+                    android:clickable="true"
+                    android:onClick="onClickUploadImage"
                     app:civ_border_color="@color/imageBorderColor"
-                    app:civ_border_width="2dp" />
+                    app:civ_border_width="2dp"
+                    tools:ignore="OnClick" />
 
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    android:layout_toLeftOf="@id/profileCircleImageView"
+                    android:layout_toLeftOf="@id/avatarUpload"
                     android:src="@drawable/ic_search" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="17dp">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginBottom="20dp"
-                    android:minHeight="200dp"
                     app:cardBackgroundColor="#13FAC4"
-                    app:cardCornerRadius="16dp"
+                    app:cardCornerRadius="17dp"
                     app:cardPreventCornerOverlap="false">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_vertical"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:weightSum="100">
 
                         <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:padding="10dp">
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="35"
+                            android:orientation="vertical">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Continue to \nrun the Race"
-                                android:textColor="#A707EC"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
+                            <LinearLayout
+                                android:id="@+id/selectedNewsWrapper"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/com_facebook_tooltip_blue_bottomnub"
+                                android:orientation="horizontal"
+                                android:weightSum="100">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="15dp"
-                                android:text="10% Complete"
-                                android:textColor="@color/primaryTextColor"
-                                android:textSize="13sp"
-                                android:textStyle="bold" />
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="30">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:adjustViewBounds="true"
+                                        android:scaleType="fitXY"
+                                        android:src="@mipmap/ic_lanch_default"
+                                        android:id="@+id/avatar">
+
+
+                                    </ImageView>
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="70"
+                                    android:orientation="horizontal">
+
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:background="#80000000"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/userName"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:paddingLeft="20dp"
+                                            android:text="Author's name"
+                                            android:textColor="@color/colorWhite"
+                                            android:textSize="12dp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="4dp"
+                                            android:paddingLeft="20dp"
+                                            android:text="Author"
+                                            android:id="@+id/ranking"
+                                            android:textColor="@color/colorWhite"
+                                            android:textSize="10dp" />
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="151dp"
-                            android:layout_marginRight="12dp"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:cropToPadding="true"
-                            android:elevation="44dp"
-                            android:src="@drawable/running_race" />
+                        <View
+                            android:id="@+id/divider"
+                            android:layout_width="match_parent"
+                            android:layout_height="3dp"
+                            android:background="?android:attr/listDivider"
+                            android:outlineAmbientShadowColor="@color/black" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="65"
+                            android:orientation="vertical"
+                            android:padding="10dp">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:minHeight="1in"
+                                tools:ignore="InOrMmUsage"
+                                android:id="@+id/listRanking">
+
+                            </androidx.recyclerview.widget.RecyclerView>
+
+                        </LinearLayout>
+
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -117,21 +187,22 @@
 
                 <Button
 
-                    android:layout_margin="10dp"
                     android:id="@+id/start_button"
-                    android:onClick="onClick_startMap"
                     android:layout_width="160dp"
                     android:layout_height="160dp"
-                    android:layout_gravity="center"
                     android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/start_button"
                     android:focusable="true"
+                    android:onClick="onClick_startMap"
                     android:scaleType="fitCenter"
                     android:text="START"
                     android:textColor="#00FFB7"
                     android:textStyle="bold" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -160,7 +231,6 @@
             </RelativeLayout>
 
             <!--remove the below layout with recycler view, use card poplar courses as model for design-->
-
 
 
             <LinearLayout

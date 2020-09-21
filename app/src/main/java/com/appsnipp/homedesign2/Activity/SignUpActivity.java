@@ -13,6 +13,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.appsnipp.homedesign2.Entity.News;
+import com.appsnipp.homedesign2.Entity.User;
 import com.appsnipp.homedesign2.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -89,7 +91,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    private void register(final String username, String email, String password) {
+    private void register(final String username, final String email, String password) {
 
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -98,21 +100,16 @@ public class SignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = auth.getCurrentUser();
                             assert firebaseUser != null;
-                            String userid = firebaseUser.getUid();
+                            String userId = firebaseUser.getUid();
 
-                            reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
-
-                            HashMap<String, String> hashMap = new HashMap<>();
-                            hashMap.put("id", userid);
-                            hashMap.put("username", username);
-                            //can add others attributes
-                            hashMap.put("score", "0");
-                            hashMap.put("distance", "0");
-                            hashMap.put("totalCal", "0");
-                            hashMap.put("status", "online");
-                            hashMap.put("search", username.toLowerCase());
-
-                            reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            reference = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+                            String weight = "0";
+                            long score = 0;
+                            String distance = "0";
+                            String totalCalo = "0";
+                            User user = new User(userId, username, weight, email, score, distance, totalCalo);
+                            user.setAvatar("");
+                            reference.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
@@ -125,14 +122,14 @@ public class SignUpActivity extends AppCompatActivity {
                                 }
                             });
                         } else {
-                            Toast.makeText(SignUpActivity.this, "You can't register woth this email or password", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUpActivity.this, "You can't register with this email or password", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("AAA", "onFailure: "+ e);
+                Log.d("AAA", "onFailure: " + e);
             }
-        });;
+        });
     }
 }

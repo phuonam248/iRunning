@@ -1,34 +1,77 @@
 package com.appsnipp.homedesign2.Activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
+import com.appsnipp.homedesign2.Adapter.UserRankingAdapter;
 import com.appsnipp.homedesign2.Entity.History;
+import com.appsnipp.homedesign2.Entity.User;
 import com.appsnipp.homedesign2.Others.BottomNavigationBehavior;
 import com.appsnipp.homedesign2.Others.DarkModePrefManager;
 import com.appsnipp.homedesign2.R;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
+
+import static java.util.Collections.sort;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String TAG = "MainActivity";
+    private FirebaseAuth fAuth;
+    private FirebaseStorage storage;
+    private FirebaseUser firebaseUser;
+    private StorageReference storageReference;
+    public ArrayList<User> listUser;
+    public UserRankingAdapter userRankingAdapter;
+    RecyclerView recyclerView;
+    public LinearLayoutManager linearLayoutManager;
+    public ImageView avatarImage, avatarUpload;
+    public TextView userName;
+    public DatabaseReference databaseReference;
+    private User currentUser;
 
     private BottomNavigationView bottomNavigationView;
     private static final int MODE_DARK = 1;
@@ -39,9 +82,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //setDarkMode(getWindow());
-
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -61,6 +101,209 @@ public class MainActivity extends AppCompatActivity
         layoutParams.setBehavior(new BottomNavigationBehavior());
 
         getDataFromMap();
+        initComponent();
+        initRankingList();
+    }
+
+    private void initComponent() {
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("images");
+        listUser = new ArrayList<>();
+        linearLayoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
+        recyclerView = findViewById(R.id.listRanking);
+        DividerItemDecoration itemDecor = new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL);
+        recyclerView.addItemDecoration(itemDecor);
+        avatarImage = findViewById(R.id.avatar);
+        userName = findViewById(R.id.userName);
+        avatarUpload = findViewById(R.id.avatarUpload);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        initAvatar();
+    }
+
+    private void initAvatar() {
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert firebaseUser != null;
+        StorageReference profileRef = storageReference.child("images/" + firebaseUser.getUid().toString());
+        profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(getApplicationContext()).load(uri).error(R.mipmap.ic_lanch_default).circleCrop().thumbnail(0.1f)
+                        .into(avatarImage);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "onFailure: "+ e.getMessage());
+            }
+        });
+
+        profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(getApplicationContext()).load(uri).error(R.mipmap.ic_lanch_default).circleCrop().thumbnail(0.1f)
+                        .into(avatarUpload);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "onFailure: "+ e.getMessage());
+            }
+        });
+
+        databaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                User user = snapshot.getValue(User.class);
+                listUser.add(user);
+                assert user != null;
+                System.out.println(user.toString());
+                sort(listUser);
+                userRankingAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                User user = snapshot.getValue(User.class);
+                for (int i = 0; i < listUser.size(); ++i) {
+                    if (listUser.get(i).getId().equals(user.getId())) {
+                        listUser.set(i, user);
+                        sort(listUser);
+                        userRankingAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                    userRankingAdapter.notifyDataSetChanged();
+
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                for (User item : listUser) {
+                    if (item.getId().equals(user.getId())) {
+                        listUser.remove(item);
+                        sort(listUser);
+                        userRankingAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                    userRankingAdapter.notifyDataSetChanged();
+
+                }
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+        });
+    }
+
+    private void initRankingList() {
+        loadData();
+    }
+
+    public void loadData() {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("Users");
+        ref.keepSynced(true);
+        setUpNewsListView();
+
+        userRankingAdapter.notifyDataSetChanged();
+        if (listUser != null && !listUser.isEmpty()) {
+////            _selectedNews = _newsList.get(0);
+//            setUpStartingSelectedNews(_selectedNews);
+        }
+
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                User user = snapshot.getValue(User.class);
+                listUser.add(user);
+                System.out.println(user.toString());
+                sort(listUser);
+                userRankingAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                User user = snapshot.getValue(User.class);
+                for (int i = 0; i < listUser.size(); ++i) {
+                    if (listUser.get(i).getId().equals(user.getId())) {
+                        listUser.set(i, user);
+                        sort(listUser);
+                        userRankingAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                    userRankingAdapter.notifyDataSetChanged();
+
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                for (User item : listUser) {
+                    if (item.getId().equals(user.getId())) {
+                        listUser.remove(item);
+                        sort(listUser);
+                        userRankingAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                    userRankingAdapter.notifyDataSetChanged();
+
+                }
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+        });
+
+
+        //     Log.d("UAA", "onDataChange: " + _newsList.size());
+//        if (!_newsList.isEmpty()) {
+//            _selectedNews = _newsList.get(0);
+//        }
+    }
+
+    private void sort(ArrayList<User> listUser) {
+        Collections.sort(listUser, new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                return o2.getScore().compareTo(o1.getScore());
+            }
+        });
+    }
+
+    private void setUpNewsListView() {
+        userRankingAdapter = new UserRankingAdapter(listUser);
+        recyclerView.setAdapter(userRankingAdapter);
+    }
+
+    public void onClickUploadImage(View view) {
+        if (view.getId() == R.id.avatarUpload) {
+            Intent upload = new Intent(MainActivity.this, UploadImageActivity.class);
+            startActivity(upload);
+
+        }
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener

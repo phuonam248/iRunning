@@ -1,51 +1,79 @@
 package com.appsnipp.homedesign2.Entity;
 
-public class User {
+import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.database.PropertyName;
 
-    private int id;
+@IgnoreExtraProperties
+public class User implements Comparable<User> {
+    @PropertyName("id")
+    private String id;
+    @PropertyName("username")
     private String name;
+
+    @PropertyName("weight")
+    private String weight;
+
     private String password;
+    @PropertyName("email")
     private String email;
-    private String phone;
-    private String address;
-    private String facebook;
-    private int score;
-    private String confirm;
-    private double distance;
-    private double totalCalo;
+    @PropertyName("score")
+    private Long score;
+    @PropertyName("distance")
+    private String distance;
+    @PropertyName("totalCal")
+    private String totalCalo;
+
     private String avatar;
 
-
-    public User(String name, String password, String email, String confirm) {
+    public User(String id, String name, String weight, String email, Long score, String distance, String totalCalo) {
+        this.id = id;
         this.name = name;
-        this.password = password;
+        this.weight = weight;
         this.email = email;
-        this.confirm = confirm;
+        this.score = score;
+        this.distance = distance;
+        this.totalCalo = totalCalo;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+
+    public User(String id, String name, String email, Long score, String distance, String totalCalo) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.score = score;
+        this.distance = distance;
+        this.totalCalo = totalCalo;
     }
 
     public User() {
-        super();
+
     }
 
-    public User(int id, String name, String password, String email, String phone, String address, String facebook,
-                int score, String confirm, double distance, double totalCalo, String avatar) {
+    public User(String id, String name, String password, String email,
+                Long score, String distance, String totalCalo, String avatar) {
         super();
         this.id = id;
         this.name = name;
         this.password = password;
         this.email = email;
-        this.phone = phone;
-        this.address = address;
-        this.facebook = facebook;
+
         this.score = score;
-        this.confirm = confirm;
+
         this.distance = distance;
         this.totalCalo = totalCalo;
         this.avatar = avatar;
 
     }
 
-    public User(int id, String password, String email) {
+    public User(String id, String password, String email) {
         super();
         this.id = id;
         this.password = password;
@@ -77,69 +105,40 @@ public class User {
         this.email = email;
     }
 
-    public String getPhone() {
-        return phone;
-    }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public double getDistance() {
+    public String getDistance() {
         return distance;
     }
 
-    public void setDistance(double distance) {
+    public void setDistance(String distance) {
         this.distance = distance;
     }
 
-    public double getTotalCalo() {
+    public String getTotalCalo() {
         return totalCalo;
     }
 
-    public void setTotalCalo(double totalCalo) {
+    public void setTotalCalo(String totalCalo) {
         this.totalCalo = totalCalo;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getFacebook() {
-        return facebook;
-    }
-
-    public void setFacebook(String facebook) {
-        this.facebook = facebook;
-    }
-
-    public int getScore() {
+    public Long getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(Long score) {
         this.score = score;
     }
 
-    public String getConfirm() {
-        return confirm;
-    }
-
-    public void setConfirm(String confirm) {
-        this.confirm = confirm;
-    }
 
     public String getAvatar() {
         return avatar;
@@ -152,18 +151,21 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
+                ", weight='" + weight + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", address='" + address + '\'' +
-                ", facebook='" + facebook + '\'' +
-                ", score=" + score +
-                ", confirm='" + confirm + '\'' +
-                ", distance=" + distance +
-                ", totalCalo=" + totalCalo +
+                ", score='" + score + '\'' +
+                ", distance='" + distance + '\'' +
+                ", totalCalo='" + totalCalo + '\'' +
                 ", avatar='" + avatar + '\'' +
                 '}';
     }
+
+    @Override
+    public int compareTo(User o) {
+        return this.score.compareTo(o.getScore());
+    }
 }
+

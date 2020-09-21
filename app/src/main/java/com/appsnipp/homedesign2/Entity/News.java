@@ -1,49 +1,125 @@
 package com.appsnipp.homedesign2.Entity;
 
-public class News {
-    String _uri;
-    String _date;
-    String _title;
-    String _author;
-    String _shortDes; // 20 words only
-    int _authorPhotoId;
-    int _backgroundPhotoId;
+import com.google.firebase.database.IgnoreExtraProperties;
 
-    public News(String date, String title, String author, String shortDes, int authorPhotoId, int backgroundPhotoId, String uri) {
-        this._date = date;
-        this._title = title;
-        this._author = author;
-        this._shortDes = shortDes;
-        this._authorPhotoId = authorPhotoId;
-        this._backgroundPhotoId = backgroundPhotoId;
-        this._uri = uri;
+import java.io.Serializable;
+
+@IgnoreExtraProperties
+public class News implements Serializable {
+    private String id;
+
+    private String uri;
+
+    private String date;
+
+    private String title;
+
+    private String author;
+
+    private String shortDes;
+
+    private String authorPhotoId;
+
+    private String backgroundPhotoId;
+
+    public News(){
+
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUri() {
-        return _uri;
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     public String getDate() {
-        return _date;
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getTitle() {
-        return _title;
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getAuthor() {
-        return _author;
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getShortDes() {
-        return _shortDes + "...";
+        return shortDes;
     }
 
-    public int getAuthorPhotoId() {
-        return _authorPhotoId;
+    public void setShortDes(String shortDes) {
+        this.shortDes = shortDes;
     }
 
-    public int getBackgroundPhotoId() {
-        return _backgroundPhotoId;
+    public String getAuthorPhotoId() {
+        return authorPhotoId;
+    }
+
+    public void setAuthorPhotoId(String authorPhotoId) {
+        this.authorPhotoId = authorPhotoId;
+    }
+
+    public String getBackgroundPhotoId() {
+        return backgroundPhotoId;
+    }
+
+    public void setBackgroundPhotoId(String backgroundPhotoId) {
+        this.backgroundPhotoId = backgroundPhotoId;
+    }
+
+    public News(String date, String title, String author, String shortDes, String authorPhotoId, String backgroundPhotoId, String uri) {
+        this.uri = uri;
+        this.date = date;
+        this.title = title;
+        this.author = author;
+        this.shortDes = shortDes;
+        this.authorPhotoId = authorPhotoId;
+        this.backgroundPhotoId = backgroundPhotoId;
+    }
+    public News(String id, String date, String title, String author, String shortDes, String authorPhotoId, String backgroundPhotoId, String uri) {
+        this.id = id;
+        this.uri = uri;
+        this.date = date;
+        this.title = title;
+        this.author = author;
+        this.shortDes = shortDes;
+        this.authorPhotoId = authorPhotoId;
+        this.backgroundPhotoId = backgroundPhotoId;
+    }
+
+    @Override
+    public String toString() {
+        return "News{" +
+                "uri='" + uri + '\'' +
+                ", date='" + date + '\'' +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", shortDes='" + shortDes + '\'' +
+                ", authorPhotoId='" + authorPhotoId + '\'' +
+                ", backgroundPhotoId='" + backgroundPhotoId + '\'' +
+                '}';
     }
 }

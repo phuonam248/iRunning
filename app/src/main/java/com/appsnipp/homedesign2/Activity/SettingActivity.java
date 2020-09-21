@@ -35,15 +35,6 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
 
     private SeekBar volumeSeekbar = null;
     private AudioManager audioManager = null;
-    // Anh
-    public void onClick_logoutBtn(View view) {
-        if (view.getId() == R.id.logoutBtn) {
-            Toast.makeText(SettingActivity.this, "See you later !", Toast.LENGTH_LONG).show();
-            FirebaseAuth.getInstance().signOut();
-            Intent signInIntent = new Intent(SettingActivity.this, LoginActivity.class);
-            startActivityForResult(signInIntent, 1);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +54,16 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         // setContentView(R.layout.activity_setting);
         initControls();
+    }
+
+    // Anh
+    public void onClick_logoutBtn(View view) {
+        if (view.getId() == R.id.logoutBtn) {
+            Toast.makeText(SettingActivity.this, "See you later !", Toast.LENGTH_LONG).show();
+            FirebaseAuth.getInstance().signOut();
+            Intent signInIntent = new Intent(SettingActivity.this, LoginActivity.class);
+            startActivityForResult(signInIntent, 1);
+        }
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener

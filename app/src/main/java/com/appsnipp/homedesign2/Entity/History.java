@@ -3,6 +3,7 @@ package com.appsnipp.homedesign2.Entity;
 import java.util.Date;
 
 public class History {
+    String _userId;
     String _date;
     String _duration;
     String _distance;
