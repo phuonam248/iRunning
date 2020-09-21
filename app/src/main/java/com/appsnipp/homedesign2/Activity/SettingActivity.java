@@ -7,8 +7,11 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,14 +19,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.appsnipp.homedesign2.Entity.User;
 import com.appsnipp.homedesign2.Others.DarkModePrefManager;
 import com.appsnipp.homedesign2.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class SettingActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -32,6 +43,13 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
     private static final int MODE_LIGHT = 1;
 
     BottomNavigationView bottomNavigationView;
+    private AlertDialog dialog;
+
+    private EditText _edtTxtName;
+    private EditText _edtTxtPassword;
+    private EditText _edtTxtPhoneNumber;
+    private EditText _edtTxtEmail;
+    private EditText _edtTxtAddress;
 
     private SeekBar volumeSeekbar = null;
     private AudioManager audioManager = null;
@@ -173,5 +191,62 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
                 window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         }
+    }
+
+    public void buttonEditProfile(View view) {
+        android.app.AlertDialog.Builder _builder = new AlertDialog.Builder(SettingActivity.this);
+        View _view = getLayoutInflater().inflate(R.layout.edit_profile_layout, null);
+        _builder.setView(_view);
+        dialog = _builder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        dialog.show();
+        dialog.getWindow().setLayout(900,1600);
+        initEditText();
+        String a="hehe";
+        loadCurrentUser(1,a);
+    }
+
+    private void initEditText() {
+        _edtTxtName=(EditText)findViewById(R.id.editTextName);
+        _edtTxtPassword=(EditText)findViewById(R.id.editTextPassword);
+        _edtTxtPhoneNumber=(EditText)findViewById(R.id.editTextPhoneNumber);
+        _edtTxtEmail=(EditText)findViewById(R.id.editTextEmail);
+        _edtTxtAddress=(EditText)findViewById(R.id.editTextAddress);
+    }
+
+    public void btnChangeAvatar_onClick(View view) {
+    }
+
+    public void loadCurrentUser(final int type, final String stringChange) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert currentUser != null;
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Users").child(currentUser.getUid());
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                user.getName();
+                switch (type){
+                    case 1:
+                        user.setName(stringChange);
+                        break;
+                    case 2:
+                        user.setPassword(stringChange);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(SettingActivity.this, "" + databaseError.getCode(), Toast.LENGTH_SHORT).show();
+            }
+
+
+        });
+
+
     }
 }

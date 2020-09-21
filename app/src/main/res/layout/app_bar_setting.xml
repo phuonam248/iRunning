@@ -35,7 +35,8 @@
                 android:textAllCaps="false"
                 android:layout_gravity="center"
                 android:layout_margin="20dp"
-                android:elevation="5dp"/>
+                android:elevation="5dp"
+                android:onClick="buttonEditProfile"/>
         </GridLayout>
         <androidx.cardview.widget.CardView
             style="@style/CardView.Border20"
