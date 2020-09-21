@@ -89,6 +89,14 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
         bottomNavigationView.setSelectedItemId(R.id.navigation2);
     }
 
+    private void setUpBotCurvedNav() {
+        bottomNavigationView = findViewById(R.id.navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        bottomNavigationView.setSelectedItemId(R.id.navigation2);
+    }
+
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
