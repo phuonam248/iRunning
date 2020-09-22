@@ -430,6 +430,15 @@ public class MainActivity extends AppCompatActivity
         return st.nextDouble();
     }
 
+    //M phai init may cai adapter voi list... DataReference bla...
+    //Datetime la voi user id xem nhu la primary key cua history, m cho no ngay gio phut giay luon
+    //Ham them 1 history
+    public void addHistoryIntoUserHasId(String userId, String date, String duration, String distance, String calories, long score) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("History");
+        History history = new History(userId, date, duration, distance, calories, score);
+        reference.push().setValue(history);
+    }
+
     public void fullList_onClick(View view) {
         Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
         startActivity(intent);
