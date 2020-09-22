@@ -9,20 +9,26 @@ import androidx.fragment.app.Fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -30,6 +36,8 @@ import com.appsnipp.homedesign2.Entity.User;
 import com.appsnipp.homedesign2.Others.DarkModePrefManager;
 import com.appsnipp.homedesign2.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -42,6 +50,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.IOException;
 
 
 public class SettingActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -62,6 +76,13 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
 
     private SeekBar volumeSeekbar = null;
     private AudioManager audioManager = null;
+
+    private FirebaseUser currentUser;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+    private Uri filePath;
+    private final int PICK_IMAGE_REQUEST = 10;
+    private ImageView userAva;
 
     final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -225,6 +246,90 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
     }
 
     public void btnChangeAvatar_onClick(View view) {
+        android.app.AlertDialog.Builder _builder = new AlertDialog.Builder(SettingActivity.this);
+        View _view = getLayoutInflater().inflate(R.layout.activity_upload_image, null);
+        _builder.setView(_view);
+        dialog = _builder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+        Button btnChoose = (Button) _view.findViewById(R.id.btnChoose);
+        Button btnUpload = (Button) _view.findViewById(R.id.btnUpload);
+        userAva = (ImageView) _view.findViewById(R.id.imgView);
+
+        btnChoose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseImage();
+            }
+        });
+
+        btnUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadImage();
+            }
+        });
+        dialog.show();
+    }
+
+    private void chooseImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            filePath = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                userAva.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void uploadImage() {
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            if (filePath != null) {
+                final ProgressDialog progressDialog = new ProgressDialog(this);
+                progressDialog.setTitle("Uploading...");
+                progressDialog.show();
+                StorageReference ref = storageReference.child("images/" + currentUser.getUid().toString());
+                ref.putFile(filePath)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                progressDialog.dismiss();
+                                Toast.makeText(SettingActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
+                                Toast.makeText(SettingActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
+                                        .getTotalByteCount());
+                                progressDialog.setMessage("Uploaded " + (int) progress + "%");
+                            }
+                        });
+            } else {
+                Toast.makeText(this,"Something wrong !", Toast.LENGTH_LONG);
+            }
+        }
     }
 
     public void loadCurrentUser(final int type, final String stringChange) {

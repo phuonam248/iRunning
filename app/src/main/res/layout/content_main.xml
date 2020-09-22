@@ -36,18 +36,6 @@
                     android:textSize="20dp"
                     android:layout_marginLeft="24dp"
                     />
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/avatarUpload"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/hero"
-                    android:clickable="true"
-                    android:onClick="onClickUploadImage"
-                    app:civ_border_color="#FF6700"
-                    app:civ_border_width="2dp"
-                    tools:ignore="OnClick" />
             </RelativeLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -106,7 +94,8 @@
                         android:gravity="center_vertical"
                         android:textSize="20dp"
                         android:textStyle="bold"
-                        android:textColor="@color/black"/>
+                        android:textColor="@color/black"
+                        android:id="@+id/userScore"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

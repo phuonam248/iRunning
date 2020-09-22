@@ -64,15 +64,15 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private FirebaseAuth fAuth;
     private FirebaseStorage storage;
-    private FirebaseUser firebaseUser;
     private StorageReference storageReference;
-    public ArrayList<User> listUser;
-    public UserRankingAdapter userRankingAdapter;
+    private ArrayList<User> listUser;
+    private UserRankingAdapter userRankingAdapter;
     private RecyclerView recyclerView;
-    public LinearLayoutManager linearLayoutManager;
-    public ImageView avatarImage, avatarUpload;
-    public TextView userName;
-    public DatabaseReference databaseReference;
+    private LinearLayoutManager linearLayoutManager;
+    private ImageView avatarImage, avatarUpload;
+    private TextView userName;
+    private TextView userSCore;
+    private DatabaseReference databaseReference;
     private User currentUser;
 
     private BottomNavigationView bottomNavigationView;
@@ -101,13 +101,13 @@ public class MainActivity extends AppCompatActivity
         //handling floating action menu
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomNavigationBehavior());
-
         getDataFromMap();
+        setUpCurUserInfo();
         initComponent();
         initRankingList();
     }
 
-    private void initComponent() {
+    public void initComponent() {
         databaseReference = FirebaseDatabase.getInstance().getReference().child("images");
         listUser = new ArrayList<>();
         linearLayoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
@@ -116,100 +116,46 @@ public class MainActivity extends AppCompatActivity
         recyclerView.addItemDecoration(itemDecor);
         avatarImage = findViewById(R.id.avatar);
         userName = findViewById(R.id.userName);
-        avatarUpload = findViewById(R.id.avatarUpload);
+        userSCore = findViewById(R.id.userScore);
+
         recyclerView.setLayoutManager(linearLayoutManager);
-        initAvatar();
     }
 
-    private void initAvatar() {
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        assert firebaseUser != null;
-        StorageReference profileRef = storageReference.child("images/" + firebaseUser.getUid().toString());
-        profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+    public void setUpCurUserInfo() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert currentUser != null;
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Users").child(currentUser.getUid());
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(getApplicationContext()).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
-                        .into(avatarImage);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "onFailure: "+ e.getMessage());
-            }
-        });
-
-        profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(getApplicationContext()).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
-                        .into(avatarUpload);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "onFailure: "+ e.getMessage());
-            }
-        });
-
-        databaseReference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                User user = snapshot.getValue(User.class);
-                listUser.add(user);
-                assert user != null;
-                System.out.println(user.toString());
-                sort(listUser);
-                userRankingAdapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                User user = snapshot.getValue(User.class);
-                for (int i = 0; i < listUser.size(); ++i) {
-                    if (listUser.get(i).getId().equals(user.getId())) {
-                        listUser.set(i, user);
-                        sort(listUser);
-                        userRankingAdapter.notifyDataSetChanged();
-                        break;
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                userName.setText(user.getName());
+                userSCore.setText(user.getScore().toString());
+                storage = FirebaseStorage.getInstance();
+                storageReference = storage.getReference();
+                StorageReference profileRef = storageReference.child("images/" + user.getId());
+                profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(MainActivity.this).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
+                                .into(avatarImage);
                     }
-                    userRankingAdapter.notifyDataSetChanged();
-
-                }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-                for (User item : listUser) {
-                    if (item.getId().equals(user.getId())) {
-                        listUser.remove(item);
-                        sort(listUser);
-                        userRankingAdapter.notifyDataSetChanged();
-                        break;
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: "+ e.getMessage());
                     }
-                    userRankingAdapter.notifyDataSetChanged();
-
-                }
-
+                });
             }
-
             @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "" + databaseError.getCode(), Toast.LENGTH_SHORT).show();
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-
         });
     }
 
-    private void initRankingList() {
+    public void initRankingList() {
         loadData();
     }
 
@@ -298,14 +244,6 @@ public class MainActivity extends AppCompatActivity
     private void setUpNewsListView() {
         userRankingAdapter = new UserRankingAdapter(listUser);
         recyclerView.setAdapter(userRankingAdapter);
-    }
-
-    public void onClickUploadImage(View view) {
-        if (view.getId() == R.id.avatarUpload) {
-            Intent upload = new Intent(MainActivity.this, UploadImageActivity.class);
-            startActivity(upload);
-
-        }
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -426,11 +364,39 @@ public class MainActivity extends AppCompatActivity
         assert currentUser != null;
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Users").child(currentUser.getUid());
-        myRef.addValueEventListener(new ValueEventListener() {
+        final DatabaseReference myRef = database.getReference("Users").child(currentUser.getUid()).child("score");
+        myRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                long updateScore = snapshot.getValue(Long.class);
+                updateScore+=score;
+                myRef.setValue(updateScore);
+            }
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+        });
+        final DatabaseReference Ref = database.getReference("Users").child(currentUser.getUid());
+        Ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
+
                 History history = new History(user.getId(), date, duration, distance, calories, score);
                 addHistoryIntoUserHasId(history);
             }

@@ -52,6 +52,7 @@
                     android:text="Music Volume"/>
                 <SeekBar
                     style="@style/Widget.AppCompat.SeekBar.MySeekBar"
+                    android:thumbTint="@color/colorOrange"
                     android:id="@+id/VolMusicBar"
                     android:layout_weight="1"/>
             </androidx.cardview.widget.CardView>
