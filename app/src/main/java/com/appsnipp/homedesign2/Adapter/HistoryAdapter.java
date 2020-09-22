@@ -47,11 +47,11 @@ public class HistoryAdapter extends ArrayAdapter<History> {
         TextView distanceTextView = convertView.findViewById(R.id.hisDistanceTextView);
         distanceTextView.setText(_historyList.get(position).getDistance());
         TextView durationTextView = convertView.findViewById(R.id.hisDurationTextView);
-        durationTextView.setText(_historyList.get(position).getDration());
+        durationTextView.setText(_historyList.get(position).getDuration());
         TextView caloriesTextView = convertView.findViewById(R.id.hisCaloriesTextView);
         caloriesTextView.setText(_historyList.get(position).getCalories());
         TextView scoreTextView = convertView.findViewById(R.id.hisScoreTextView);
-        scoreTextView.setText(String.valueOf(_historyList.get(position).getSCore()));
+        scoreTextView.setText(String.valueOf(_historyList.get(position).getScore()));
         return convertView;
     }
 }

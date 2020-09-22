@@ -29,6 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -48,6 +49,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity
     private StorageReference storageReference;
     public ArrayList<User> listUser;
     public UserRankingAdapter userRankingAdapter;
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     public LinearLayoutManager linearLayoutManager;
     public ImageView avatarImage, avatarUpload;
     public TextView userName;
@@ -414,12 +416,35 @@ public class MainActivity extends AppCompatActivity
             String date = intent.getStringExtra("date");
             String calories = intent.getStringExtra("calories");
             long score = (long)intent.getIntExtra("score", 0);
-            history = new History(date,
-                    duration,
-                    distance,
-                    calories,
-                    score);
+            saveCurUserHistory(date, duration, distance, calories, score);
         }
+//        saveCurUserHistory("9/22/2020", "00:00:12", "30 km", "0.05 kcal", 100);
+    }
+
+    public void saveCurUserHistory(final String date, final String duration, final String distance, final String calories, final long score) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert currentUser != null;
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Users").child(currentUser.getUid());
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                History history = new History(user.getId(), date, duration, distance, calories, score);
+                addHistoryIntoUserHasId(history);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "" + databaseError.getCode(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //Ham them 1 history
+    public void addHistoryIntoUserHasId(History history) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("History").child(history.getUserId());
+        reference.push().setValue(history);
     }
 
     double getDoubleFromString(String string) {
@@ -432,12 +457,6 @@ public class MainActivity extends AppCompatActivity
 
     //M phai init may cai adapter voi list... DataReference bla...
     //Datetime la voi user id xem nhu la primary key cua history, m cho no ngay gio phut giay luon
-    //Ham them 1 history
-    public void addHistoryIntoUserHasId(String userId, String date, String duration, String distance, String calories, long score) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("History");
-        History history = new History(userId, date, duration, distance, calories, score);
-        reference.push().setValue(history);
-    }
 
     public void fullList_onClick(View view) {
         Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
