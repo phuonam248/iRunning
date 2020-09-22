@@ -8,6 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,6 +16,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -26,8 +29,12 @@ import android.widget.Toast;
 import com.appsnipp.homedesign2.Entity.User;
 import com.appsnipp.homedesign2.Others.DarkModePrefManager;
 import com.appsnipp.homedesign2.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,7 +45,7 @@ import com.google.firebase.database.ValueEventListener;
 
 
 public class SettingActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
+    private static final String TAG = "SettingActivity";
     private static final int MODE_DARK = 1;
     private static final int MODE_LIGHT = 1;
 
@@ -47,12 +54,16 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
 
     private EditText _edtTxtName;
     private EditText _edtTxtPassword;
-    private EditText _edtTxtPhoneNumber;
     private EditText _edtTxtEmail;
-    private EditText _edtTxtAddress;
+
+    private EditText _edtTxtNewPassword;
+    private EditText _edtTxtReEnterPassword;
+    private EditText _edtTxtOldPassword;
 
     private SeekBar volumeSeekbar = null;
     private AudioManager audioManager = null;
+
+    final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,12 +112,12 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
                     startActivity(home);
                     return true;
 
-                case  R.id.navigation3:
+                case R.id.navigation3:
                     Intent setting = new Intent(SettingActivity.this, MainActivity.class);
                     startActivity(setting);
                     return true;
 
-                case  R.id.navigation4:
+                case R.id.navigation4:
                     Intent music = new Intent(SettingActivity.this, ListSongActivity.class);
                     startActivity(music);
                     return true;
@@ -200,18 +211,17 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
         dialog = _builder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         dialog.show();
-        dialog.getWindow().setLayout(900,1600);
-        initEditText();
-        String a="hehe";
-        loadCurrentUser(1,a);
+        dialog.getWindow().setLayout(900, 1000);
+        initEditText(_view);
+        String a = "hehe";
+        //loadCurrentUser(1,a);
     }
 
-    private void initEditText() {
-        _edtTxtName=(EditText)findViewById(R.id.editTextName);
-        _edtTxtPassword=(EditText)findViewById(R.id.editTextPassword);
-        _edtTxtPhoneNumber=(EditText)findViewById(R.id.editTextPhoneNumber);
-        _edtTxtEmail=(EditText)findViewById(R.id.editTextEmail);
-        _edtTxtAddress=(EditText)findViewById(R.id.editTextAddress);
+    private void initEditText(View view) {
+        _edtTxtName = (EditText) view.findViewById(R.id.editTextName);
+        _edtTxtPassword = (EditText) view.findViewById(R.id.editTextPassword);
+        _edtTxtEmail = (EditText) view.findViewById(R.id.editTextEmail);
+        loadCurrentUser(0, "");
     }
 
     public void btnChangeAvatar_onClick(View view) {
@@ -227,26 +237,134 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
+
                 user.getName();
-                switch (type){
+                switch (type) {
                     case 1:
                         user.setName(stringChange);
                         break;
                     case 2:
                         user.setPassword(stringChange);
                         break;
+                    case 3:
+                        user.setEmail(stringChange);
+                        break;
                     default:
+                        setEditProfile(user.getName(), user.getPassword(), user.getEmail());
                         break;
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(SettingActivity.this, "" + databaseError.getCode(), Toast.LENGTH_SHORT).show();
             }
 
-
+            private void setEditProfile(String name, String password, String email) {
+                _edtTxtName.setText(name);
+                _edtTxtEmail.setText(email);
+                _edtTxtPassword.setText(password);
+            }
         });
+    }
 
+    public void onClick_changeData(View view) {
+        int _typeChange = view.getId();
+        switch (_typeChange) {
+            case R.id.buttonEditName:
+                editName();
+                break;
+            case R.id.buttonEditPassword:
+                editPassword(view);
+                break;
+            case R.id.buttonEditMail:
+                editMail();
+                break;
+            default:
+                break;
+        }
+    }
 
+    private void editMail() {
+        _edtTxtName.setEnabled(true);
+    }
+
+    private void editPassword(View view) {
+        android.app.AlertDialog.Builder _builder = new AlertDialog.Builder(SettingActivity.this);
+        View _view = getLayoutInflater().inflate(R.layout.edit_password_layout, null);
+        _builder.setView(_view);
+        dialog = _builder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        dialog.show();
+        initChangePasswordEditText(_view);
+    }
+
+    private void initChangePasswordEditText(View view) {
+        _edtTxtNewPassword = (EditText)view.findViewById(R.id.editTextNewPassword);
+        _edtTxtReEnterPassword=(EditText)view.findViewById(R.id.editTextReEnterPassword);
+        _edtTxtOldPassword= (EditText)view.findViewById(R.id.editTextOldPassword);
+    }
+
+    private void editName() {
+        _edtTxtName.setEnabled(true);
+    }
+
+    private void changePassword(final String oldPass,final String newPass){
+        // Get auth credentials from the user for re-authentication. The example below shows
+        // email and password credentials but there are multiple possible providers,
+        // such as GoogleAuthProvider or FacebookAuthProvider.
+        if(user==null) Log.d(TAG, "changePassword: user null"); 
+        AuthCredential credential = EmailAuthProvider
+                .getCredential(user.getEmail(), oldPass.toString());
+
+        Log.d(TAG, "changePassword: cho nay");
+        // Prompt the user to re-provide their sign-in credentials
+        user.reauthenticate(credential)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "Password updated");
+                                        Toast.makeText(SettingActivity.this, "Password has been updated!", Toast.LENGTH_SHORT).show();
+                                        dialog.cancel();
+                                    } else {
+                                        Log.d(TAG, "Error password not updated");
+                                    }
+                                }
+                            });
+                        } else {
+                            Log.d(TAG, "Error auth failed");
+                        }
+                    }
+                });
+    }
+
+    public void onClick_cancelChangingPassword(View view) {
+        dialog.cancel();
+    }
+
+    public void onClick_acceptChangingPassword(View view) {
+        String _oldPass= _edtTxtOldPassword.getText().toString();
+        String _pass=_edtTxtNewPassword.getText().toString();
+        String _rePass=_edtTxtNewPassword.getText().toString();
+        if(_pass==null||_rePass==null||_oldPass==null){
+            Toast.makeText(this, "Please fill all the information!",
+                    Toast.LENGTH_SHORT).show();
+            onClick_acceptChangingPassword(view);
+        }
+        if(_pass.equals(_rePass)){
+            Log.d(TAG, "onClick_acceptChangingPassword: " +
+                    _edtTxtNewPassword.getText().toString());
+            Log.d(TAG, "onClick_acceptChangingPassword: " +
+                    _edtTxtReEnterPassword.getText().toString());
+            changePassword(_oldPass,_pass);
+        } else {
+            Toast.makeText(this, "Passwords are not match! Enter Password again!",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 }

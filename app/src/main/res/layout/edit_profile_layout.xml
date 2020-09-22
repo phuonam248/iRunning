@@ -5,28 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:minHeight="1600dp"
-    android:minWidth="900dp">
+    android:minWidth="900dp"
+    android:background="@drawable/shape_4corners_layout">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="3"
         android:layout_gravity="center">
-        <androidx.cardview.widget.CardView
-            android:layout_height="120dp"
-            android:layout_width="120dp"
-            app:cardCornerRadius="60dp"
-            android:layout_gravity="center_vertical">
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_user"/>
-        </androidx.cardview.widget.CardView>
-        <ImageButton
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="bottom|end"
-            android:background="@drawable/ic_camera_icon_6"
-            android:onClick="btnChangeAvatar_onClick"/>
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <androidx.cardview.widget.CardView
+                android:layout_height="120dp"
+                android:layout_width="120dp"
+                app:cardCornerRadius="60dp"
+                android:layout_gravity="center_vertical">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_user"/>
+                <Button
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="bottom|end"
+                    android:background="@drawable/ic_camera_icon_6"
+                    android:onClick="btnChangeAvatar_onClick"/>
+            </androidx.cardview.widget.CardView>
+        </FrameLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,7 +52,8 @@
             android:layout_marginLeft="24dp"
             android:layout_gravity="center"
             android:id="@+id/buttonEditName"
-            android:background="@drawable/ic_baseline_edit_24"/>
+            android:background="@drawable/ic_baseline_edit_24"
+            android:onClick="onClick_changeData"/>
     </LinearLayout>
 
     <EditText
@@ -73,7 +81,8 @@
             android:layout_marginLeft="24dp"
             android:layout_gravity="center"
             android:id="@+id/buttonEditPassword"
-            android:background="@drawable/ic_baseline_edit_24"/>
+            android:background="@drawable/ic_baseline_edit_24"
+            android:onClick="onClick_changeData"/>
     </LinearLayout>
 
 
@@ -81,35 +90,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:text="********"
+        android:enabled="false"
         android:layout_marginHorizontal="20dp"
         android:id="@+id/editTextPassword"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Phone Number"
-            android:textSize="20dp"
-            android:layout_marginLeft="20dp"
-            android:gravity="center"/>
-        <Button
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginLeft="24dp"
-            android:layout_gravity="center"
-            android:id="@+id/buttonEditPhoneNumber"
-            android:background="@drawable/ic_baseline_edit_24"/>
-    </LinearLayout>
-
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginHorizontal="20dp"
-        android:id="@+id/editTextPhoneNumber"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -127,41 +111,15 @@
             android:layout_marginLeft="24dp"
             android:layout_gravity="center"
             android:id="@+id/buttonEditMail"
-            android:background="@drawable/ic_baseline_edit_24"/>
+            android:background="@drawable/ic_baseline_edit_24"
+            android:onClick="onClick_changeData"/>
     </LinearLayout>
-
-
     <EditText
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginHorizontal="20dp"
-        android:id="@+id/editTextEmail"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Address"
-            android:textSize="20dp"
-            android:layout_marginLeft="20dp"
-            android:gravity="center"/>
-        <Button
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginLeft="24dp"
-            android:layout_gravity="center"
-            android:id="@+id/buttonEditAddress"
-            android:background="@drawable/ic_baseline_edit_24"/>
-    </LinearLayout>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginHorizontal="20dp"
-        android:id="@+id/editTextAddress"/>
+        android:id="@+id/editTextEmail"
+        android:enabled="false"/>
 
 </LinearLayout>
