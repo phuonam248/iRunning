@@ -71,7 +71,8 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:layout_marginLeft">150dp</item>
-        <item name="colorPrimaryDark">@color/colorOrange</item>
+        <item name="android:progressTint">@color/colorOrange</item>
+        <item name="android:progressBackgroundTint">@color/colorOrange</item>
     </style>
     <style name="Widget.AppCompat.Button.MyButton" parent="Widget.AppCompat.Button">
         <item name="android:layout_height">50dp</item>
