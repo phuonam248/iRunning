@@ -1,6 +1,8 @@
 package com.appsnipp.homedesign2.Activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -11,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.appsnipp.homedesign2.Entity.News;
@@ -39,6 +42,13 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
         initial();
         auth = FirebaseAuth.getInstance();
+        setUpActionBar();
+    }
+
+    private void setUpActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#FF6700"));
+        actionBar.setBackgroundDrawable(colorDrawable);
     }
 
     private void initial() {

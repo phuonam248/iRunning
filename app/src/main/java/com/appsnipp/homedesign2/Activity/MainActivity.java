@@ -105,10 +105,10 @@ public class MainActivity extends AppCompatActivity
         //handling floating action menu
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomNavigationBehavior());
-        getDataFromMap();
-        setUpCurUserInfo();
         initComponent();
+        getDataFromMap();
         initRankingList();
+        setUpCurUserInfo();
     }
 
     void checkAndRecordStatus() {
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity
                 profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Glide.with(MainActivity.this).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
+                        Glide.with(getApplicationContext()).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
                                 .into(avatarImage);
                     }
                 }).addOnFailureListener(new OnFailureListener() {

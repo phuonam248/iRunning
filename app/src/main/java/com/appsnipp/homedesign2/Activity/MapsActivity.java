@@ -1,6 +1,7 @@
 package com.appsnipp.homedesign2.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -112,6 +113,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         initComponents();
         handler = new Handler();
+        setUpActionBar();
     }
 
     private void initComponents() {
@@ -434,5 +436,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onPause() {
         super.onPause();
         locationManager.removeUpdates(locationListener);
+    }
+
+    private void setUpActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#FF6700"));
+        actionBar.setBackgroundDrawable(colorDrawable);
     }
 }

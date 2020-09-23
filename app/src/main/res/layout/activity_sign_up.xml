@@ -52,7 +52,10 @@
         android:layout_gravity="center"
         android:layout_marginTop="60dp"
         android:text="DONE"
-        android:onClick="onClick_sign_upBtn">
+        android:onClick="onClick_sign_upBtn"
+        android:background="@drawable/btn_round_corner"
+        android:textColor="@color/white"
+        android:textStyle="bold">
     </Button>
 
 </LinearLayout>
