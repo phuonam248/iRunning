@@ -63,6 +63,8 @@ import java.util.Scanner;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private String TAG = "MapsActivity";
+    private LocationManager locationManager;
+    private LocationListener locationListener;
     private StorageReference storageReference;
     private FirebaseStorage storage;
     private String startTime;
@@ -276,11 +278,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void UpdateLocationChange() {
-        LocationManager locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
+        locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
                 getDeviceLocation(false);
@@ -320,7 +319,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
                 mPreviousLocation = mLastKnownLocation;
             }
-        });
+        };
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
 
     private void getDeviceLocation(final boolean isFirstTime) {
@@ -425,5 +428,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 pauseBtn.setText("RESUME");
             }
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        locationManager.removeUpdates(locationListener);
     }
 }

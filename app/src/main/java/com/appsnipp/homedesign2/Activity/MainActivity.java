@@ -362,47 +362,21 @@ public class MainActivity extends AppCompatActivity
     public void saveCurUserHistory(final String date, final String duration, final String distance, final String calories, final long score) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         assert currentUser != null;
-
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("Users").child(currentUser.getUid()).child("score");
-        myRef.addChildEventListener(new ChildEventListener() {
+        History history = new History(currentUser.getUid(), date, duration, distance, calories, score);
+        addHistoryIntoUserHasId(history);
+        final DatabaseReference Ref = FirebaseDatabase.getInstance().getReference("Users").child(currentUser.getUid());
+        Ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                long updateScore = snapshot.getValue(Long.class);
-                updateScore+=score;
-                myRef.setValue(updateScore);
-            }
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                long updateScore = user.getScore() + score;
+                DatabaseReference newScoreRef = FirebaseDatabase.getInstance().getReference("Users").child(user.getId()).child("score");
+                newScoreRef.setValue(updateScore);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-
-        });
-        final DatabaseReference Ref = database.getReference("Users").child(currentUser.getUid());
-        Ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-
-                History history = new History(user.getId(), date, duration, distance, calories, score);
-                addHistoryIntoUserHasId(history);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(MainActivity.this, "" + databaseError.getCode(), Toast.LENGTH_SHORT).show();
             }
         });
     }
