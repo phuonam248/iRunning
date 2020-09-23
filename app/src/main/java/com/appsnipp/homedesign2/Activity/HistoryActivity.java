@@ -2,8 +2,11 @@ package com.appsnipp.homedesign2.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,6 +48,13 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_history);
         initComponents();
         LoadHistoryOfCurUser();
+        setUpActionBar();
+    }
+
+    private void setUpActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#FF6700"));
+        actionBar.setBackgroundDrawable(colorDrawable);
     }
 
     public void initComponents() {
