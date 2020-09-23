@@ -319,7 +319,7 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
                 profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Glide.with(SettingActivity.this).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
+                        Glide.with(getApplicationContext()).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
                                 .into(ava);
                     }
                 }).addOnFailureListener(new OnFailureListener() {

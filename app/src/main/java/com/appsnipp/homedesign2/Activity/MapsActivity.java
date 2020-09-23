@@ -213,7 +213,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Glide.with(MapsActivity.this).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
+                        Glide.with(getApplicationContext()).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
                                 .into(imageView);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
