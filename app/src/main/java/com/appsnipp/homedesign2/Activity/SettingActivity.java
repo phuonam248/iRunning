@@ -8,7 +8,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +19,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Editable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +27,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -76,6 +75,8 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
 
     private SeekBar volumeSeekbar = null;
     private AudioManager audioManager = null;
+    private LinearLayout _linearLayoutChangeProfile;
+    private String _userName=null;
 
     private FirebaseUser currentUser;
     private FirebaseStorage storage;
@@ -336,28 +337,21 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         assert currentUser != null;
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Users").child(currentUser.getUid());
+        final DatabaseReference myRef = database.getReference("Users").child(currentUser.getUid());
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-
-                user.getName();
                 switch (type) {
                     case 1:
-                        user.setName(stringChange);
-                        break;
-                    case 2:
-                        user.setPassword(stringChange);
-                        break;
-                    case 3:
-                        user.setEmail(stringChange);
+                        myRef.child("name").setValue(stringChange);
                         break;
                     default:
                         setEditProfile(user.getName(), user.getPassword(), user.getEmail());
                         break;
                 }
+
             }
 
             @Override
@@ -380,21 +374,14 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
                 editName();
                 break;
             case R.id.buttonEditPassword:
-                editPassword(view);
-                break;
-            case R.id.buttonEditMail:
-                editMail();
+                editPassword();
                 break;
             default:
                 break;
         }
     }
 
-    private void editMail() {
-        _edtTxtName.setEnabled(true);
-    }
-
-    private void editPassword(View view) {
+    private void editPassword() {
         android.app.AlertDialog.Builder _builder = new AlertDialog.Builder(SettingActivity.this);
         View _view = getLayoutInflater().inflate(R.layout.edit_password_layout, null);
         _builder.setView(_view);
@@ -411,6 +398,9 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
     }
 
     private void editName() {
+        _linearLayoutChangeProfile=(LinearLayout)dialog.findViewById(R.id.linearLayoutChooseChange);
+        _linearLayoutChangeProfile.setVisibility(View.VISIBLE);
+        _userName=_edtTxtName.getText().toString();
         _edtTxtName.setEnabled(true);
     }
 
@@ -471,5 +461,22 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
             Toast.makeText(this, "Passwords are not match! Enter Password again!",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void onClick_acceptChangingProfile(View view) {
+        String newName=_edtTxtName.getText().toString();
+        if(newName!=null&&newName!=_userName){
+            changeName(newName);
+        }
+        _edtTxtName.setEnabled(false);
+        _linearLayoutChangeProfile.setVisibility(View.GONE);
+    }
+
+    private void changeName(String newName) {
+        loadCurrentUser(1,newName);
+    }
+
+    public void onClick_cancelChangingProfile(View view) {
+        _linearLayoutChangeProfile.setVisibility(View.GONE);
     }
 }
