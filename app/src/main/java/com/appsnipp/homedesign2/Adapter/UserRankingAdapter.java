@@ -1,6 +1,7 @@
 package com.appsnipp.homedesign2.Adapter;
 
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.appsnipp.homedesign2.Entity.User;
@@ -40,28 +42,42 @@ public class UserRankingAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView;
         itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_ranking_item, parent, false);
+
         Log.d(TAG, "onCreateViewHolder: ");
         return new UserRankingViewHolder(itemView);
 
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         User user = userList.get(position);
         StorageReference profileRef = storageReference.child("images/" + user.getId().toString());
         View view;
         final ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.itemAvatar);
+        final ImageView statusImage = holder.itemView.findViewById(R.id.isOnline);
+        final TextView userNameView = holder.itemView.findViewById(R.id.itemUserName);
+        final TextView userScore = holder.itemView.findViewById(R.id.itemScore);
+        final TextView userLevel = holder.itemView.findViewById(R.id.itemLevel);
+        if (!user.getStatus().equals("online")) {
+            statusImage.setColorFilter(ContextCompat.getColor(holder.itemView.getContext(), R.color.miniDescription),
+                    android.graphics.PorterDuff.Mode.MULTIPLY);
+        }
+        userNameView.setText(user.getName());
+        userScore.setText("Score: "+ user.getScore());
+        userLevel.setText(Integer.toString(position + 1));
+
         profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Glide.with(holder.itemView).load(uri).error(R.mipmap.ic_lanch_default).circleCrop().thumbnail(0.1f)
+                Glide.with(holder.itemView).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
                         .into(imageView);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "onFailure: "+ e.getMessage());
+                Log.d(TAG, "onFailure: " + e.getMessage());
             }
         });
         UserRankingAdapter.UserRankingViewHolder userRankingViewHolder = new UserRankingViewHolder(holder.itemView);
@@ -82,7 +98,7 @@ public class UserRankingAdapter extends RecyclerView.Adapter {
         public UserRankingViewHolder(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
-         //   imageView = itemView.findViewById(R.id.itemAvatar);
+            //   imageView = itemView.findViewById(R.id.itemAvatar);
             textView = itemView.findViewById(R.id.itemUserName);
             itemView.setOnClickListener(this);
         }

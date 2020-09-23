@@ -22,6 +22,32 @@ public class User implements Comparable<User> {
     private String distance;
     @PropertyName("totalCal")
     private String totalCalo;
+    @PropertyName("status")
+    private  String status;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", weight='" + weight + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", score=" + score +
+                ", distance='" + distance + '\'' +
+                ", totalCalo='" + totalCalo + '\'' +
+                ", status='" + status + '\'' +
+                ", avatar='" + avatar + '\'' +
+                '}';
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     private String avatar;
 
@@ -146,21 +172,6 @@ public class User implements Comparable<User> {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", weight='" + weight + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", score='" + score + '\'' +
-                ", distance='" + distance + '\'' +
-                ", totalCalo='" + totalCalo + '\'' +
-                ", avatar='" + avatar + '\'' +
-                '}';
     }
 
     @Override

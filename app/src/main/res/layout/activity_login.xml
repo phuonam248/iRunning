@@ -1,21 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.LoginActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="100"
+    tools:context=".Activity.LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp">
+        android:layout_height="0dp"
+        android:layout_weight="40">
+
+        <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/cardview_default_radius"
+
+                >
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/logo" />
+            </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
+        </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
+
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="60"
         android:orientation="vertical">
 
         <EditText
@@ -23,10 +45,9 @@
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
             android:hint="Username"
-            android:inputType="text">
-        </EditText>
+            android:inputType="text"></EditText>
 
         <EditText
             android:id="@+id/loginPassEditText"
@@ -35,69 +56,66 @@
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:hint="Password"
-            android:inputType="textPassword">
-        </EditText>
+            android:inputType="textPassword"></EditText>
 
         <CheckBox
+            android:id="@+id/showPassCheckbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginRight="60dp"
-            android:text="Show password"
-            android:id="@+id/showPassCheckbox">
+            android:text="Show password">
 
         </CheckBox>
 
         <Button
             android:id="@+id/loginBtn"
-            android:background="@drawable/btn_round_corner"
-            android:textColor="@color/white"
-            android:textStyle="bold"
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
+            android:background="@drawable/btn_round_corner"
+            android:onClick="onClick_loginBtn"
             android:text="LOG IN"
-            android:onClick="onClick_loginBtn">
-        </Button>
+            android:textColor="@color/white"
+            android:textStyle="bold"></Button>
 
         <Button
-            android:background="@drawable/btn_round_corner"
-            android:textColor="@color/white"
-            android:textStyle="bold"
             android:id="@+id/navigateToSignInBtn"
-            android:onClick="onClick_navigateToSignInBtn"
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="SIGN UP">
-        </Button>
+            android:background="@drawable/btn_round_corner"
+            android:onClick="onClick_navigateToSignInBtn"
+            android:text="SIGN UP"
+            android:textColor="@color/white"
+            android:textStyle="bold"></Button>
 
         <com.facebook.login.widget.LoginButton
             android:id="@+id/facebookLoginBtn"
-            android:onClick="onClick_facebookLoginBtn"
             android:layout_width="300dp"
-            android:layout_height="50dp"
+            android:layout_height="37dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:textAlignment="center"
-            android:paddingLeft="17dp"/>
+            android:layout_marginTop="20dp"
+            android:height="@dimen/cardview_default_radius"
+            android:onClick="onClick_facebookLoginBtn"
+            android:paddingLeft="17dp"
+            android:textAlignment="center" />
 
         <com.shaishavgandhi.loginbuttons.GoogleButton
-            app:iconCenterAligned="false"
+            android:id="@+id/googleLoginBtn"
             android:layout_width="300dp"
-            android:layout_height="20dp"
+            android:layout_height="37dp"
             android:layout_gravity="center"
-            app:iconSize="15dp"
-            android:textColor="@color/black"
+            android:layout_marginTop="15dp"
+            android:onClick="onClick_googleLoginBtn"
             android:text="Continue with Google"
             android:textAllCaps="false"
-            android:layout_marginTop="15dp"
+            android:textColor="@color/black"
+            app:iconCenterAligned="false"
             app:iconPadding="23dp"
-            android:id="@+id/googleLoginBtn"
-            android:onClick="onClick_googleLoginBtn"
-            />
+            app:iconSize="15dp" />
 
     </LinearLayout>
 

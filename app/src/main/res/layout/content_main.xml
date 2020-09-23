@@ -20,29 +20,28 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
+
+
                 <TextView
                     android:id="@+id/textViewUser"
-                    style="@style/viewParent.headerText"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerVertical="true"
-                    android:maxLines="2"
-                    android:layout_marginTop="15dp"
+                    android:layout_width="230dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/btn_round_corner"
-                    android:text="@string/lastest_ranking"
-                    android:padding="5dp"
-                    android:fadingEdge="vertical"
-                    android:scrollbarThumbHorizontal="@color/colorAccent"
+                    android:gravity="center"
+                    android:text="TOP RUNNER"
                     android:textColor="@color/white"
-                    android:textSize="25dp"
-                    android:layout_marginLeft="24dp"
-                    />
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
             </RelativeLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
                 android:orientation="vertical"
                 android:weightSum="100">
+
                 <LinearLayout
                     android:id="@+id/selectedNewsWrapper"
                     android:layout_width="match_parent"
@@ -50,66 +49,77 @@
                     android:background="#F3F0EE"
                     android:orientation="horizontal"
                     android:weightSum="100">
+
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="20">
+
                         <ImageView
+                            android:id="@+id/avatar"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:adjustViewBounds="true"
                             android:scaleType="fitXY"
-                            android:src="@mipmap/ic_lanch_default"
-                            android:id="@+id/avatar">
-                        </ImageView>
+                            android:src="@mipmap/ic_lanch_default"></ImageView>
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="15"
-                        android:text="4"
-                        android:gravity="center"
                         android:layout_gravity="center"
-                        android:textSize="25dp"
-                        android:textColor="@color/black"/>
+                        android:layout_weight="15"
+                        android:gravity="center"
+                        android:text="4"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="25dp" />
+
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="45"
+
                         android:orientation="horizontal">
+
                         <TextView
+                            android:textStyle="bold"
                             android:id="@+id/userName"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:gravity="center_vertical"
                             android:paddingLeft="5dp"
                             android:text="Author's name"
-                            android:textSize="20dp"
-                            android:gravity="center_vertical"
-                            android:textColor="@color/black" />
+                            android:textColor="@color/black"
+                            android:textSize="20dp" />
                     </LinearLayout>
+
                     <TextView
+                        android:id="@+id/userScore"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="20"
-                        android:text="300"
                         android:gravity="center_vertical"
-                        android:textSize="20dp"
-                        android:textStyle="bold"
+                        android:text="300"
                         android:textColor="@color/black"
-                        android:id="@+id/userScore"/>
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_marginTop="15dp"
                     android:layout_weight="95"
-                    android:orientation="vertical"
-                    android:padding="10dp">
+                    android:orientation="vertical">
+
                     <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/listRanking"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:minHeight="1in"
                         tools:ignore="InOrMmUsage"
-                        android:id="@+id/listRanking">
+                       >
+
                     </androidx.recyclerview.widget.RecyclerView>
                 </LinearLayout>
             </LinearLayout>
@@ -117,70 +127,79 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
+                android:layout_marginTop="20dp"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:orientation="horizontal">
+
                     <TextView
+                        android:id="@+id/hisDateTextView"
                         android:layout_width="230dp"
                         android:layout_height="40dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/btn_round_corner"
                         android:gravity="center"
                         android:text="LASTEST RECORD"
                         android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:textSize="25dp"
-                        android:background="@drawable/btn_round_corner"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginBottom="10dp"
-                        android:id="@+id/hisDateTextView"/>
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
                     <Button
                         android:layout_width="80dp"
                         android:layout_height="25dp"
-                        android:textColor="@color/colorOrange"
-                        android:text="full list"
+                        android:layout_marginLeft="52dp"
                         android:background="@drawable/border_button"
                         android:onClick="fullList_onClick"
-                        android:textStyle="bold"
-                        android:layout_marginLeft="10dp" />
+                        android:text="full list"
+                        android:textColor="@color/colorOrange"
+                        android:textStyle="bold" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="130dp"
-                    android:background="@drawable/history_round_corner"
-                    android:layout_marginTop="12dp">
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/history_round_corner">
+
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:text="RUNNING"
                             android:paddingLeft="50dp"
+                            android:text="RUNNING"
                             android:textSize="18dp"
                             android:textStyle="bold" />
+
                         <TextView
+                            android:id="@+id/hisDistanceTextView"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="2.5"
-                            android:text="1 km"
-                            android:textSize="40dp"
-                            android:textStyle="bold"
-                            android:textColor="@color/black"
                             android:paddingLeft="50dp"
-                            android:id="@+id/hisDistanceTextView"/>
+                            android:text="1 km"
+                            android:textColor="@color/black"
+                            android:textSize="40dp"
+                            android:textStyle="bold" />
+
                         <TextView
+                            android:id="@+id/hisDurationTextView"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1.5"
+                            android:paddingLeft="50dp"
                             android:text="00:11:25"
                             android:textSize="25dp"
-                            android:textStyle="bold"
-                            android:paddingLeft="50dp"
-                            android:id="@+id/hisDurationTextView"/>
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -188,49 +207,54 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="2"
                             android:orientation="vertical">
+
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
                                 android:layout_weight="1"
-                                android:text="SCORE"
                                 android:paddingLeft="20dp"
+                                android:text="SCORE"
                                 android:textSize="18dp"
                                 android:textStyle="bold" />
+
                             <TextView
+                                android:id="@+id/hisScoreTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
                                 android:layout_weight="1.5"
-                                android:text="300"
-                                android:textSize="25dp"
-                                android:textStyle="bold"
-                                android:textColor="@color/black"
                                 android:paddingLeft="20dp"
-                                android:id="@+id/hisScoreTextView"/>
+                                android:text="300"
+                                android:textColor="@color/black"
+                                android:textSize="25dp"
+                                android:textStyle="bold" />
                         </LinearLayout>
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:text="CALORIES"
                             android:paddingLeft="20dp"
                             android:paddingTop="6dp"
+                            android:text="CALORIES"
                             android:textSize="18dp"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold" />
+
                         <TextView
+                            android:id="@+id/hisCaloriesTextView"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:text="10.08 KCAL"
-                            android:textSize="25dp"
-                            android:textStyle="bold"
-                            android:textColor="@color/black"
                             android:paddingLeft="20dp"
-                            android:id="@+id/hisCaloriesTextView"/>
+                            android:text="10.08 KCAL"
+                            android:textColor="@color/black"
+                            android:textSize="25dp"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -238,8 +262,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:gravity="center">
+
                 <Button
                     android:id="@+id/start_button"
                     android:layout_width="100dp"
@@ -252,8 +277,8 @@
                     android:onClick="onClick_startMap"
                     android:scaleType="fitCenter"
                     android:text="START"
-                    android:textSize="17dp"
                     android:textColor="@color/white"
+                    android:textSize="17dp"
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
