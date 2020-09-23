@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 
 import com.appsnipp.homedesign2.Adapter.UserRankingAdapter;
@@ -21,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatDelegate;
+
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,6 +31,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -51,9 +54,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Scanner;
 
 import static java.util.Collections.sort;
@@ -74,7 +80,7 @@ public class MainActivity extends AppCompatActivity
     private TextView userSCore;
     private DatabaseReference databaseReference;
     private User currentUser;
-
+    public String currentUserId;
     private BottomNavigationView bottomNavigationView;
     private static final int MODE_DARK = 1;
     private static final int MODE_LIGHT = 1;
@@ -87,17 +93,15 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        checkAndRecordStatus();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         bottomNavigationView.setSelectedItemId(R.id.navigation3);
-
         //handling floating action menu
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomNavigationBehavior());
@@ -107,13 +111,67 @@ public class MainActivity extends AppCompatActivity
         initRankingList();
     }
 
+    void checkAndRecordStatus() {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myConnectionsRef = database.getReference("connections");
+        final DatabaseReference lastOnlineRef = database.getReference("lastOnline");
+        final DatabaseReference connectedRef = database.getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NotNull DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                final DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUserId).child("status");
+                String id = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+                if (connected) {
+                    DatabaseReference con = myConnectionsRef
+                            .child(id);
+                    con.setValue(Boolean.TRUE);
+
+                    presenceRef.setValue("online");
+                    con.onDisconnect().setValue(false);
+
+                    lastOnlineRef.child(id).onDisconnect().setValue(ServerValue.TIMESTAMP);
+
+                } else {
+
+                    presenceRef.setValue("offline");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.w(TAG, "Listener was cancelled at .info/connected");
+            }
+        });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setStatus("online");
+    }
+
+    public void setStatus(String status) {
+        currentUserId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        final DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUserId).child("status");
+        presenceRef.setValue(status);
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        setStatus("offline");
+    }
+
     public void initComponent() {
         databaseReference = FirebaseDatabase.getInstance().getReference().child("images");
         listUser = new ArrayList<>();
         linearLayoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         recyclerView = findViewById(R.id.listRanking);
-        DividerItemDecoration itemDecor = new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL);
-        recyclerView.addItemDecoration(itemDecor);
+//        DividerItemDecoration itemDecor = new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL);
+//        recyclerView.addItemDecoration(itemDecor);
         avatarImage = findViewById(R.id.avatar);
         userName = findViewById(R.id.userName);
         userSCore = findViewById(R.id.userScore);
@@ -144,10 +202,11 @@ public class MainActivity extends AppCompatActivity
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: "+ e.getMessage());
+                        Log.d(TAG, "onFailure: " + e.getMessage());
                     }
                 });
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(MainActivity.this, "" + databaseError.getCode(), Toast.LENGTH_SHORT).show();
@@ -262,9 +321,9 @@ public class MainActivity extends AppCompatActivity
                     Intent home = new Intent(MainActivity.this, DietActivity.class);
                     startActivity(home);
                     return true;
-                case  R.id.navigation3:
+                case R.id.navigation3:
                     return true;
-                case  R.id.navigation4:
+                case R.id.navigation4:
                     Intent music = new Intent(MainActivity.this, ListSongActivity.class);
                     startActivity(music);
                     return true;
@@ -320,21 +379,22 @@ public class MainActivity extends AppCompatActivity
     }
 
     //create a seperate class file, if required in multiple activities
-    public void setDarkMode(Window window){
-        if(new DarkModePrefManager(this).isNightMode()){
+    public void setDarkMode(Window window) {
+        if (new DarkModePrefManager(this).isNightMode()) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            changeStatusBar(MODE_DARK,window);
-        }else{
+            changeStatusBar(MODE_DARK, window);
+        } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            changeStatusBar(MODE_LIGHT,window);
+            changeStatusBar(MODE_LIGHT, window);
         }
     }
-    public void changeStatusBar(int mode, Window window){
-        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.M){
+
+    public void changeStatusBar(int mode, Window window) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(this.getResources().getColor(R.color.contentStatusBar));
             //Light mode
-            if(mode==MODE_LIGHT){
+            if (mode == MODE_LIGHT) {
                 window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         }
@@ -353,7 +413,7 @@ public class MainActivity extends AppCompatActivity
             String duration = intent.getStringExtra("duration");
             String date = intent.getStringExtra("date");
             String calories = intent.getStringExtra("calories");
-            long score = (long)intent.getIntExtra("score", 0);
+            long score = (long) intent.getIntExtra("score", 0);
             saveCurUserHistory(date, duration, distance, calories, score);
         }
 //        saveCurUserHistory("9/22/2020", "00:00:12", "30 km", "0.05 kcal", 100);
