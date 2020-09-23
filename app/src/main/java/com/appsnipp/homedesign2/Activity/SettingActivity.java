@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.appsnipp.homedesign2.Entity.User;
 import com.appsnipp.homedesign2.Others.DarkModePrefManager;
 import com.appsnipp.homedesign2.R;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -105,6 +106,7 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         // setContentView(R.layout.activity_setting);
         initControls();
+        initUserAva();
     }
 
     // Anh
@@ -115,6 +117,11 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
             Intent signInIntent = new Intent(SettingActivity.this, LoginActivity.class);
             startActivityForResult(signInIntent, 1);
         }
+    }
+
+    public void initUserAva() {
+        ImageView imageView = findViewById(R.id.settingAvatar);
+        loadCurUserImage(imageView);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -233,8 +240,10 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
         dialog = _builder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         dialog.show();
-        dialog.getWindow().setLayout(900, 1000);
+        dialog.getWindow().setLayout(900, 1500);
         initEditText(_view);
+        ImageView imageView = _view.findViewById(R.id.changeAva);
+        loadCurUserImage(imageView);
         String a = "hehe";
         //loadCurrentUser(1,a);
     }
@@ -257,20 +266,19 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
         Button btnChoose = (Button) _view.findViewById(R.id.btnChoose);
         Button btnUpload = (Button) _view.findViewById(R.id.btnUpload);
         userAva = (ImageView) _view.findViewById(R.id.imgView);
-
         btnChoose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 chooseImage();
             }
         });
-
         btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 uploadImage();
             }
         });
+        loadCurUserImage(userAva);
         dialog.show();
     }
 
@@ -294,6 +302,38 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
                 e.printStackTrace();
             }
         }
+    }
+
+    public void loadCurUserImage(final ImageView ava) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert currentUser != null;
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Users").child(currentUser.getUid());
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                storage = FirebaseStorage.getInstance();
+                storageReference = storage.getReference();
+                StorageReference profileRef = storageReference.child("images/" + user.getId());
+                profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(SettingActivity.this).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
+                                .into(ava);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: "+ e.getMessage());
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(SettingActivity.this, "" + databaseError.getCode(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void uploadImage() {
@@ -339,7 +379,7 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("Users").child(currentUser.getUid());
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -468,6 +508,7 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
         if(newName!=null&&newName!=_userName){
             changeName(newName);
         }
+        _edtTxtName.setText(newName);
         _edtTxtName.setEnabled(false);
         _linearLayoutChangeProfile.setVisibility(View.GONE);
     }

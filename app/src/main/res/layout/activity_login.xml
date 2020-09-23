@@ -50,6 +50,9 @@
 
         <Button
             android:id="@+id/loginBtn"
+            android:background="@drawable/btn_round_corner"
+            android:textColor="@color/white"
+            android:textStyle="bold"
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -59,6 +62,9 @@
         </Button>
 
         <Button
+            android:background="@drawable/btn_round_corner"
+            android:textColor="@color/white"
+            android:textStyle="bold"
             android:id="@+id/navigateToSignInBtn"
             android:onClick="onClick_navigateToSignInBtn"
             android:layout_width="300dp"

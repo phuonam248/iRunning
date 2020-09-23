@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:minHeight="1700dp"
+    android:layout_height="wrap_content"
+    android:minHeight="2500dp"
     android:minWidth="900dp"
     android:background="@drawable/shape_4corners_layout">
     <LinearLayout
@@ -26,7 +26,8 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/ic_user"/>
+                    android:src="@drawable/ic_user"
+                    android:id="@+id/changeAva"/>
             </androidx.cardview.widget.CardView>
             <Button
                 android:layout_width="40dp"
