@@ -13,7 +13,15 @@ public class DietMeals {
     String _name;
     String _videoUri;
     ArrayList<Ingredient> _ingredient;
+    private int _type;
 
+    public int getType() {
+        return _type;
+    }
+
+    public void setType(int type) {
+        this._type = type;
+    }
 
     public DietMeals(String name, String videoUri, int photoId,
                      double card, double lipid, double ldl, double protein, double calo) {

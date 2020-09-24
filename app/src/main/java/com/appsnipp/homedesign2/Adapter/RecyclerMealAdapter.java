@@ -43,6 +43,7 @@ public class RecyclerMealAdapter extends RecyclerView.Adapter<RecyclerMealAdapte
         int _imgID= _dietMeals.get(position).getPhotoId();
         holder.imageViewMeal.setImageResource(_imgID);
         holder.textViewMealName.setText(_name);
+        holder.type=_dietMeals.get(position).getType();
     }
 
     @Override
@@ -54,6 +55,7 @@ public class RecyclerMealAdapter extends RecyclerView.Adapter<RecyclerMealAdapte
         private ImageView imageViewMeal;
         private TextView textViewMealName;
         OnMealListener onMealListener;
+        private int type;
         public MealViewHolder(@NonNull View itemView, OnMealListener onMealListener) {
             super(itemView);
             imageViewMeal=(ImageView)itemView.findViewById(R.id.imageViewMeal);
@@ -64,11 +66,11 @@ public class RecyclerMealAdapter extends RecyclerView.Adapter<RecyclerMealAdapte
         }
         @Override
         public void onClick(View view) {
-            onMealListener.onMealItemClick(getAdapterPosition());
+            onMealListener.onMealItemClick(getAdapterPosition(),type);
         }
     }
     public interface OnMealListener{
-        void onMealItemClick(int position);
+        void onMealItemClick(int position,int type);
     }
 
 }

@@ -279,8 +279,19 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
     }
 
     @Override
-    public void onMealItemClick(int position) {
-        DietMeals _dMeal = _dietBreakfastInWeek.get(_dayID).get(position);
+    public void onMealItemClick(int position,int type) {
+        DietMeals _dMeal=null;
+        switch (type){
+            case R.id.buttonFindFood0:
+                _dMeal = _dietBreakfastInWeek.get(_dayID).get(position);
+                break;
+            case R.id.buttonFindFood1:
+                _dMeal = _dietLunchInWeek.get(_dayID).get(position);
+                break;
+            case R.id.buttonFindFood2:
+                _dMeal = _dietLunchInWeek.get(_dayID).get(position);
+                break;
+        }
         AlertDialog.Builder _builder = new AlertDialog.Builder(DietActivity.this);
         View _view = getLayoutInflater().inflate(R.layout.food_info_layout, null);
         _builder.setView(_view);
@@ -379,6 +390,7 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
     }
 
     private void setResult(DietMeals result,int buttonID) {
+        result.setType(buttonID);
         switch (buttonID){
             case R.id.buttonFindFood0:
                 _dietBreakfastInWeek.get(_dayID).add(result);
