@@ -350,6 +350,11 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 progressDialog.dismiss();
                                 Toast.makeText(SettingActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                                loadCurUserImage(userAva);
+                                View _view = getLayoutInflater().inflate(R.layout.activity_upload_image, null);
+                                ImageView imageView = _view.findViewById(R.id.changeAva);
+                                loadCurUserImage(imageView);
+                                initUserAva();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
