@@ -524,6 +524,8 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
     }
 
     public void onClick_cancelChangingProfile(View view) {
+        _edtTxtName.setText(_userName);
+        _edtTxtName.setEnabled(false);
         _linearLayoutChangeProfile.setVisibility(View.GONE);
     }
 }
