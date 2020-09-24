@@ -79,6 +79,8 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
     private LinearLayout _linearLayoutChangeProfile;
     private String _userName=null;
 
+    private View _view;
+
     private FirebaseUser currentUser;
     private FirebaseStorage storage;
     private StorageReference storageReference;
@@ -235,7 +237,7 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
 
     public void buttonEditProfile(View view) {
         android.app.AlertDialog.Builder _builder = new AlertDialog.Builder(SettingActivity.this);
-        View _view = getLayoutInflater().inflate(R.layout.edit_profile_layout, null);
+        _view = getLayoutInflater().inflate(R.layout.edit_profile_layout, null);
         _builder.setView(_view);
         dialog = _builder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
@@ -351,7 +353,6 @@ public class SettingActivity extends AppCompatActivity implements NavigationView
                                 progressDialog.dismiss();
                                 Toast.makeText(SettingActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
                                 loadCurUserImage(userAva);
-                                View _view = getLayoutInflater().inflate(R.layout.activity_upload_image, null);
                                 ImageView imageView = _view.findViewById(R.id.changeAva);
                                 loadCurUserImage(imageView);
                                 initUserAva();
