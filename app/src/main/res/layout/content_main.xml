@@ -64,17 +64,6 @@
                             android:src="@mipmap/ic_lanch_default"></ImageView>
                     </LinearLayout>
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_weight="15"
-                        android:gravity="center"
-                        android:text="4"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:textSize="25dp" />
-
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -88,7 +77,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center_vertical"
-                            android:paddingLeft="5dp"
+                            android:paddingLeft="20dp"
                             android:text="Author's name"
                             android:textColor="@color/black"
                             android:textSize="20dp" />
@@ -98,11 +87,12 @@
                         android:id="@+id/userScore"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="20"
+                        android:layout_weight="30"
                         android:gravity="center_vertical"
                         android:text="300"
                         android:textColor="@color/black"
                         android:textSize="20dp"
+                        android:paddingLeft="20dp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -163,6 +153,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="130dp"
                     android:layout_marginTop="12dp"
+                    android:id="@+id/lastRecordWrapper"
                     android:background="@drawable/history_round_corner">
 
                     <LinearLayout
@@ -175,7 +166,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:paddingLeft="50dp"
+                            android:paddingLeft="40dp"
                             android:text="RUNNING"
                             android:textSize="18dp"
                             android:textStyle="bold" />
@@ -185,18 +176,18 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="2.5"
-                            android:paddingLeft="50dp"
+                            android:paddingLeft="40dp"
                             android:text="1 km"
                             android:textColor="@color/black"
-                            android:textSize="40dp"
+                            android:textSize="30dp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/hisDurationTextView"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_weight="1.5"
-                            android:paddingLeft="50dp"
+                            android:layout_weight="2"
+                            android:paddingLeft="40dp"
                             android:text="00:11:25"
                             android:textSize="25dp"
                             android:textStyle="bold" />
@@ -218,7 +209,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
                                 android:layout_weight="1"
-                                android:paddingLeft="20dp"
+                                android:paddingLeft="40dp"
                                 android:text="SCORE"
                                 android:textSize="18dp"
                                 android:textStyle="bold" />
@@ -228,7 +219,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
                                 android:layout_weight="1.5"
-                                android:paddingLeft="20dp"
+                                android:paddingLeft="40dp"
                                 android:text="300"
                                 android:textColor="@color/black"
                                 android:textSize="25dp"
@@ -239,7 +230,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:paddingLeft="20dp"
+                            android:paddingLeft="40dp"
                             android:paddingTop="6dp"
                             android:text="CALORIES"
                             android:textSize="18dp"
@@ -250,7 +241,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:paddingLeft="20dp"
+                            android:paddingLeft="40dp"
                             android:text="10.08 KCAL"
                             android:textColor="@color/black"
                             android:textSize="25dp"

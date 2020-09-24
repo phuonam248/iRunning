@@ -51,6 +51,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,6 +79,11 @@ public class MainActivity extends AppCompatActivity
     private ImageView avatarImage, avatarUpload;
     private TextView userName;
     private TextView userSCore;
+    private TextView lastDistance;
+    private TextView lastDuration;
+    private TextView lastScore;
+    private TextView lastCalories;
+    private LinearLayout lastRecordWrapper;
     private DatabaseReference databaseReference;
     private User currentUser;
     public String currentUserId;
@@ -177,6 +183,19 @@ public class MainActivity extends AppCompatActivity
         userSCore = findViewById(R.id.userScore);
 
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        lastCalories = findViewById(R.id.hisCaloriesTextView);
+        lastDistance = findViewById(R.id.hisDistanceTextView);
+        lastDuration = findViewById(R.id.hisDurationTextView);
+        lastScore = findViewById(R.id.hisScoreTextView);
+        lastRecordWrapper = findViewById(R.id.lastRecordWrapper);
+    }
+
+    public void setLastRecord(String calories, String distance, String duration, long score) {
+        lastCalories.setText(calories);
+        lastDuration.setText(duration);
+        lastDistance.setText(distance);
+        lastScore.setText(String.valueOf(score));
     }
 
     public void setUpCurUserInfo() {
@@ -415,6 +434,10 @@ public class MainActivity extends AppCompatActivity
             String calories = intent.getStringExtra("calories");
             long score = (long) intent.getIntExtra("score", 0);
             saveCurUserHistory(date, duration, distance, calories, score);
+            setLastRecord(calories, distance, duration, score);
+        }
+        else {
+            LoadHistoryOfCurUser();
         }
 //        saveCurUserHistory("9/22/2020", "00:00:12", "30 km", "0.05 kcal", 100);
     }
@@ -461,5 +484,64 @@ public class MainActivity extends AppCompatActivity
     public void fullList_onClick(View view) {
         Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
         startActivity(intent);
+    }
+
+    public void loadHistoryByUserId(final String id) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("History").child(id);
+        databaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                History history = snapshot.getValue(History.class);
+                if (history != null && history.getUserId().equals(id)) {
+                    lastRecordWrapper.setVisibility(View.VISIBLE);
+                    setLastRecord(history.getCalories(),
+                            history.getDistance(),
+                            history.getDuration(),
+                            history.getScore());
+                }
+                else {
+                    lastRecordWrapper.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String
+                    previousChildName) {
+
+            }
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                History history = snapshot.getValue(History.class);
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void LoadHistoryOfCurUser() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert currentUser != null;
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Users").child(currentUser.getUid());
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                loadHistoryByUserId(user.getId());
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "" + databaseError.getCode(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

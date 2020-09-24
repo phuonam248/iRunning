@@ -313,7 +313,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         LatLng src = new LatLng(mPreviousLocation.getLatitude(), mPreviousLocation.getLongitude());
                         LatLng des = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
                         runningRecord.add(src);
-                        Polyline polyline = mMap.addPolyline(new PolylineOptions().add(
+                        Polyline polyline = mMap.addPolyline(new PolylineOptions().width(15)
+                                .color(MapsActivity.this.getResources().getColor(R.color.colorOrange))
+                                .add(
                                 src, des
                         ));
                     }
