@@ -9,11 +9,14 @@ import androidx.annotation.NonNull;
 
 import com.appsnipp.homedesign2.Adapter.UserRankingAdapter;
 import com.appsnipp.homedesign2.Entity.History;
+import com.appsnipp.homedesign2.Entity.PresentUser;
 import com.appsnipp.homedesign2.Entity.User;
 import com.appsnipp.homedesign2.Others.BottomNavigationBehavior;
 import com.appsnipp.homedesign2.Others.DarkModePrefManager;
 import com.appsnipp.homedesign2.R;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -41,7 +44,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -67,7 +69,7 @@ import static java.util.Collections.sort;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, PresentUser.NetworkCallback {
     private static final String TAG = "MainActivity";
     private FirebaseAuth fAuth;
     private FirebaseStorage storage;
@@ -92,9 +94,11 @@ public class MainActivity extends AppCompatActivity
     private static final int MODE_LIGHT = 1;
     private History history;
     private boolean check = false;
+    private PresentUser presentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -114,7 +118,14 @@ public class MainActivity extends AppCompatActivity
         initComponent();
         getDataFromMap();
         initRankingList();
+        initListenerConnect();
         setUpCurUserInfo();
+    }
+
+    void initListenerConnect() {
+        presentUser = new PresentUser();
+        presentUser.registerContext(getApplicationContext(), this);
+        presentUser.updateStatus(getApplicationContext());
     }
 
     void checkAndRecordStatus() {
@@ -122,6 +133,7 @@ public class MainActivity extends AppCompatActivity
         final DatabaseReference myConnectionsRef = database.getReference("connections");
         final DatabaseReference lastOnlineRef = database.getReference("lastOnline");
         final DatabaseReference connectedRef = database.getReference(".info/connected");
+
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NotNull DataSnapshot snapshot) {
@@ -132,7 +144,6 @@ public class MainActivity extends AppCompatActivity
                     DatabaseReference con = myConnectionsRef
                             .child(id);
                     con.setValue(Boolean.TRUE);
-
                     presenceRef.setValue("online");
                     con.onDisconnect().setValue(false);
 
@@ -167,8 +178,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onPause() {
-        super.onPause();
+
         setStatus("offline");
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        presentUser.unregisterContext(getApplicationContext());
+        super.onDestroy();
     }
 
     public void initComponent() {
@@ -215,8 +233,11 @@ public class MainActivity extends AppCompatActivity
                 profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Glide.with(getApplicationContext()).load(uri).error(R.drawable.ic_user).circleCrop().thumbnail(0.1f)
-                                .into(avatarImage);
+                        Glide.with(getApplicationContext()).asBitmap().load(uri).apply(new RequestOptions()
+                                .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.DATA)
+                                .error(R.drawable.ic_user).circleCrop()).thumbnail(0.1f).into(avatarImage);
+
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -435,8 +456,7 @@ public class MainActivity extends AppCompatActivity
             long score = (long) intent.getIntExtra("score", 0);
             saveCurUserHistory(date, duration, distance, calories, score);
             setLastRecord(calories, distance, duration, score);
-        }
-        else {
+        } else {
             LoadHistoryOfCurUser();
         }
 //        saveCurUserHistory("9/22/2020", "00:00:12", "30 km", "0.05 kcal", 100);
@@ -498,8 +518,7 @@ public class MainActivity extends AppCompatActivity
                             history.getDistance(),
                             history.getDuration(),
                             history.getScore());
-                }
-                else {
+                } else {
                     lastRecordWrapper.setVisibility(View.INVISIBLE);
                 }
             }
@@ -509,6 +528,7 @@ public class MainActivity extends AppCompatActivity
                     previousChildName) {
 
             }
+
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 History history = snapshot.getValue(History.class);
@@ -538,10 +558,37 @@ public class MainActivity extends AppCompatActivity
                 User user = dataSnapshot.getValue(User.class);
                 loadHistoryByUserId(user.getId());
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(MainActivity.this, "" + databaseError.getCode(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    @Override
+    public void onConnectionChanged(boolean connected) {
+
+        currentUserId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        final DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUserId).child("status");
+        final DatabaseReference userLastOnlineRef = FirebaseDatabase.getInstance().getReference("UsersLastOnline").child(currentUserId);
+        if (connected) {
+            presenceRef.setValue("online");
+            userLastOnlineRef.setValue(0);
+            System.out.println("GgG");
+            userRankingAdapter.notifyDataSetChanged();
+        } else {
+//            for (int i = 0; i < listUser.size(); i++) {
+//                User user = listUser.get(i);
+//                if (user.getId().equals(currentUserId)) {
+//                   user.setStatus("offline");
+//                   userRankingAdapter.notifyDataSetChanged();
+//                   break;
+//                }
+//            }
+        }
+
+
+    }
+
 }

@@ -18,6 +18,9 @@ import com.appsnipp.homedesign2.Adapter.SongsAdapter;
 import com.appsnipp.homedesign2.R;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -27,10 +30,24 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ListSongActivity extends AppCompatActivity {
     private static final int MODE_DARK = 1;
     private static final int MODE_LIGHT = 1;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setStatus("online");
+    }
+
+    public void setStatus(String status) {
+        String currentUserId;
+        currentUserId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        final DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUserId).child("status");
+        presenceRef.setValue(status);
+
+    }
 
     BottomNavigationView bottomNavigationView;
     SongsAdapter _songsAdapter;

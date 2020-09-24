@@ -1,106 +1,122 @@
 package com.appsnipp.homedesign2.Entity;
 
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
+
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+
+import org.jetbrains.annotations.NotNull;
+
+
 import java.util.ArrayList;
+import java.util.Objects;
 
 
-// class for
-public class PresentUser implements com.appsnipp.homedesign2.Entity.CallbackInterface {
-    private static PresentUser presentUser = null;
-    private static com.appsnipp.homedesign2.Entity.CallbackInterface callbackInterface = null;
+public class PresentUser  {
+    public static CallbackInterface callbackInterface;
+    public ArrayList<User> userArrayList;
+    public Context context;
+    //
+    private boolean connected;
+    public NetworkCallback callback;
 
-    private PresentUser() {
+    public NetworkCallback getCallback() {
+        return callback;
     }
 
-
-    private static PresentUser getInstance() {
-        if (presentUser == null) {
-            presentUser = new PresentUser();
-            callbackInterface = new com.appsnipp.homedesign2.Entity.CallbackInterface() {
-                @Override
-                public void onCallback(boolean connect) {
-                    System.out.println(connect + "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
-                }
-
-                @Override
-                public void onCallbackOnlineAccount(ArrayList<User> list) {
-                    System.out.println(list.toString());
-                }
-            };
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateStatus(context);
         }
-        return presentUser;
+    };
+
+
+    public void updateStatus(Context context) {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        boolean isConnected = false;
+        Network[] allNetworks = connectivityManager.getAllNetworks();
+
+        for (Network network : allNetworks) {
+            NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(network);
+            if (networkCapabilities != null) {
+                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                        || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                        || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
+                    isConnected = true;
+                break;
+            }
+        }
+
+        if (callback != null) {
+            callback.onConnectionChanged(isConnected);
+        }
     }
 
-    public static void setOnline(String id) {
-        DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("Users").child(id).child("status");
-        presenceRef.setValue("online");
+    public void registerContext(Context context, NetworkCallback callback) {
+        this.callback = callback;
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        context.registerReceiver(receiver, filter);
+        updateStatus(context);
     }
 
-    public static void setOffline(String id) {
-        DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("Users").child(id).child("status");
-        presenceRef.onDisconnect().setValue("offline");
+    public void unregisterContext(Context context) {
+        callback = null;
+        context.unregisterReceiver(receiver);
     }
 
-//    public static void getAllOnlineUser(ArrayList<User> list, String id) {
-//        Query query = FirebaseDatabase.getInstance().getReference("Users").child(id).orderByChild("status");
-//        query.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                User user = null;
-//                ArrayList<User> list = new ArrayList<>();
-//                for (DataSnapshot ds : snapshot.getChildren()) {
-//                    user = ds.getValue(User.class);
-//                    list.add(user);
-//                    callbackInterface.onCallbackOnlineAccount(list);
-//                }
-//                System.out.println("FFFFFFFFFFFF"+ list.toString());
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
-
-//    public static void isOnline(String id) {
-//        DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("Users").child(id).child("status");
-//        presenceRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                String connection = snapshot.getValue(String.class);
-//                assert connection != null;
-//                if (connection.equals("online")) {
-//                    callbackInterface.onCallback(true);
-//                } else {
-//                    callbackInterface.onCallback(false);
-//                }
-//            }
-//
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
-
-
-    @Override
-    public void onCallback(boolean connect) {
+    public PresentUser() {
 
     }
 
-    @Override
-    public void onCallbackOnlineAccount(ArrayList<User> list) {
+
+
+    public interface NetworkCallback {
+        void onConnectionChanged(boolean connected);
+    }
+
+
+
+    public void getAllOnlineUser() {
+        Query query = FirebaseDatabase.getInstance().getReference("Users");
+        query.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (Objects.equals(snapshot.child("status").getValue(), "online")) {
+                        User user = snapshot.getValue(User.class);
+                        userArrayList.add(user);
+                    }
+                }
+                callbackInterface.onCallbackOnlineAccount(userArrayList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+
+        });
 
     }
+
 }
