@@ -19,7 +19,7 @@ import java.util.List;
 
 public class RecyclerDayAdapter extends RecyclerView.Adapter<RecyclerDayAdapter.DayViewHolder> {
     private static final String TAG="RecyclerDayAdapter";
-    private int _selectedPosition=RecyclerView.NO_POSITION;
+    private int _selectedPosition=0;
     private final List<DayOfWeek> _dayOfWeeks;
     private Context _context;
     private RecyclerDayAdapter.OnDayListener _onDayListener;
@@ -47,6 +47,7 @@ public class RecyclerDayAdapter extends RecyclerView.Adapter<RecyclerDayAdapter.
         int _color=0;
         switch (_day){
             case "MON":
+                _selectedView=holder.itemView;
                 _color=_context.getColor(R.color.colorOrange);
                 break;
             case "TUE":
@@ -67,10 +68,14 @@ public class RecyclerDayAdapter extends RecyclerView.Adapter<RecyclerDayAdapter.
             default:
                 break;
         }
-
         holder._txtVDayOfWeek.setBackgroundColor(_color);
         holder._txtVDayOfWeek.setText(_day);
+        if (position==0){
+            _selectedView.setScaleY(1.2f);
+            _selectedView.setScaleX(1.2f);
+        }
     }
+
     public void setSelectedPosition(View view, int position){
         _selectedView=view;
         _selectedView.setScaleX(1.2f);

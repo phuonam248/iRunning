@@ -167,19 +167,19 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
         _breakfastRecyclerView = (RecyclerView) findViewById(R.id.rclVBreakfast);
         _breakfastRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         _breakfastRecyclerView.setAdapter(_recyclerBreakfastAdapter);
-        new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(_breakfastRecyclerView);
+        new ItemTouchHelper(breakfastItemTouchHelper).attachToRecyclerView(_breakfastRecyclerView);
 
         _recyclerLunchAdapter = _lunchInWeekAdapter.get(_dayID);
         _lunchRecyclerView = (RecyclerView) findViewById(R.id.rclVLunch);
         _lunchRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         _lunchRecyclerView.setAdapter(_recyclerLunchAdapter);
-        new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(_lunchRecyclerView);
+        new ItemTouchHelper(lunchItemTouchHelper).attachToRecyclerView(_lunchRecyclerView);
 
         _recyclerDinnerAdapter = _dinnerInWeekAdapter.get(_dayID);
         _dinnerRecyclerView = (RecyclerView) findViewById(R.id.rclVDinner);
         _dinnerRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         _dinnerRecyclerView.setAdapter(_recyclerDinnerAdapter);
-        new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(_dinnerRecyclerView);
+        new ItemTouchHelper(dinnerItemTouchHelper).attachToRecyclerView(_dinnerRecyclerView);
     }
 
     private void initWeekAdapter() {
@@ -416,7 +416,7 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
         _dinnerRecyclerView.setAdapter(_dinnerInWeekAdapter.get(_dayID));
     }
 
-    ItemTouchHelper.SimpleCallback itemTouchHelper = new ItemTouchHelper.
+    ItemTouchHelper.SimpleCallback breakfastItemTouchHelper = new ItemTouchHelper.
             SimpleCallback(0,ItemTouchHelper.RIGHT| ItemTouchHelper.LEFT) {
 
         @Override
@@ -428,9 +428,37 @@ public class DietActivity extends AppCompatActivity implements RecyclerMealAdapt
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             _dietBreakfastInWeek.get(_dayID).remove(viewHolder.getAdapterPosition());
             _recyclerBreakfastAdapter.notifyDataSetChanged();
+        }
+    };
 
+    ItemTouchHelper.SimpleCallback lunchItemTouchHelper = new ItemTouchHelper.
+            SimpleCallback(0,ItemTouchHelper.RIGHT| ItemTouchHelper.LEFT) {
+
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
         }
 
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            _dietLunchInWeek.get(_dayID).remove(viewHolder.getAdapterPosition());
+            _recyclerLunchAdapter.notifyDataSetChanged();
+        }
+    };
+
+    ItemTouchHelper.SimpleCallback dinnerItemTouchHelper = new ItemTouchHelper.
+            SimpleCallback(0,ItemTouchHelper.RIGHT| ItemTouchHelper.LEFT) {
+
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            _dietDinnerInWeek.get(_dayID).remove(viewHolder.getAdapterPosition());
+            _recyclerDinnerAdapter.notifyDataSetChanged();
+        }
     };
 
 }
